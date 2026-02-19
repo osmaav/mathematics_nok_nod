@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import './App.css';
+import { ActiveSectionProvider } from './contexts/ActiveSectionContext';
 import Header from './sections/Header';
 import Hero from './sections/Hero';
+import TheoryIntro from './sections/TheoryIntro';
 import NODTheory from './sections/NODTheory';
 import NOKTheory from './sections/NOKTheory';
 import Calculator from './sections/Calculator';
@@ -13,27 +15,28 @@ function App() {
   useEffect(() => {
     // Smooth scroll polyfill for older browsers
     document.documentElement.style.scrollBehavior = 'smooth';
-    
+
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
     };
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <main>
-        <Hero />
-        <div id="theory">
+    <ActiveSectionProvider>
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main>
+          <Hero />
+          <TheoryIntro />
           <NODTheory />
           <NOKTheory />
-        </div>
-        <Calculator />
-        <Practice />
-        <Quiz />
-      </main>
-      <Footer />
-    </div>
+          <Calculator />
+          <Practice />
+          <Quiz />
+        </main>
+        <Footer />
+      </div>
+    </ActiveSectionProvider>
   );
 }
 

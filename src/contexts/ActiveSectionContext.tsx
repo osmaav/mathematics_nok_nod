@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 type SectionName = 'hero' | 'theory-intro' | 'nod' | 'nok' | 'calculator' | 'practice' | 'quiz';
 

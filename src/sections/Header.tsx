@@ -15,7 +15,7 @@ const navItems = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { activeSection, setActiveSection } = useActiveSection();
+  const { activeSection } = useActiveSection();
 
   useEffect(() => {
     const handleScroll = () => {
