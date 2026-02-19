@@ -5,10 +5,42 @@ import { generateQuizQuestions } from '@/lib/math';
 import confetti from 'canvas-confetti';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
-const questions = generateQuizQuestions();
+// Функция для перемешивания массива (алгоритм Фишера-Йетса)
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function prepareQuizQuestions() {
+  const questions = generateQuizQuestions();
+  // Перемешиваем порядок вопросов
+  const shuffledQuestions = shuffleArray(questions);
+  
+  return shuffledQuestions.map((q, questionIndex) => {
+    // Создаем карту перемешивания вариантов ответов
+    const shuffleMap = shuffleArray([0, 1, 2, 3]);
+    const shuffledOptions = shuffleMap.map(i => q.options[i]);
+    // Находим новый индекс правильного ответа
+    const newCorrectIndex = shuffleMap.indexOf(q.correctAnswer);
+    
+    return {
+      ...q,
+      id: questionIndex + 1, // Обновляем ID для нового порядка
+      options: shuffledOptions,
+      originalCorrectAnswer: q.correctAnswer,
+      correctAnswer: newCorrectIndex,
+      shuffleMap,
+    };
+  });
+}
 
 export default function Quiz() {
   useSectionVisibility({ sectionId: 'quiz' });
+  const [questions] = useState(() => prepareQuizQuestions());
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
