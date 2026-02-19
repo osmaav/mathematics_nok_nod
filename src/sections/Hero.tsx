@@ -151,7 +151,7 @@ export default function Hero() {
               <div className="text-text-secondary text-xs sm:text-sm">Темы</div>
             </div>
             <div className="text-center">
-              <div className="font-heading font-bold text-2xl sm:text-3xl text-nok-dark">10+</div>
+              <div className="font-heading font-bold text-2xl sm:text-3xl text-nok-dark">60</div>
               <div className="text-text-secondary text-xs sm:text-sm">Заданий</div>
             </div>
             <div className="text-center">
