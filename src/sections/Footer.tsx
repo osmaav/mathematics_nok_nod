@@ -24,7 +24,7 @@ export default function Footer() {
               transition={{ duration: 0.5 }}
             >
               <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-nod flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-nok flex items-center justify-center">
                   <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
@@ -61,7 +61,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="text-white/70 hover:text-nod transition-colors text-sm sm:text-base"
+                      className="text-white/70 hover:text-nok transition-colors text-sm sm:text-base"
                     >
                       {link.label}
                     </a>
@@ -88,7 +88,7 @@ export default function Footer() {
                       href={resource.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white/70 hover:text-nod transition-colors inline-flex items-center gap-1 text-sm sm:text-base"
+                      className="text-white/70 hover:text-nok transition-colors inline-flex items-center gap-1 text-sm sm:text-base"
                     >
                       {resource.label}
                       <ExternalLink className="w-3 h-3 flex-shrink-0" />
@@ -111,7 +111,7 @@ export default function Footer() {
                     href="https://t.me/osmaav"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-nod transition-colors inline-flex items-center gap-1"
+                    className="hover:text-nok transition-colors inline-flex items-center gap-1"
                   >
                     osmaav
                     <svg

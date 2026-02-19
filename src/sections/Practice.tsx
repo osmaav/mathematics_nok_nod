@@ -14,14 +14,14 @@ export default function Practice() {
   const [showSolutions, setShowSolutions] = useState<Record<number, boolean>>({});
   const [correctCount, setCorrectCount] = useState(0);
 
-  const filteredTasks = selectedDifficulty === 'all' 
-    ? tasks 
+  const filteredTasks = selectedDifficulty === 'all'
+    ? tasks
     : tasks.filter(t => t.difficulty === selectedDifficulty);
 
   const handleCheck = (taskId: number, correctAnswer: number) => {
     const userAnswer = parseInt(answers[taskId]);
     const isCorrect = userAnswer === correctAnswer;
-    
+
     if (!checked[taskId]) {
       setChecked(prev => ({ ...prev, [taskId]: true }));
       if (isCorrect) {
@@ -99,11 +99,10 @@ export default function Practice() {
                 <button
                   key={filter.key}
                   onClick={() => setSelectedDifficulty(filter.key as any)}
-                  className={`px-3 sm:px-4 py-2 rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${
-                    selectedDifficulty === filter.key
-                      ? 'bg-text-primary text-white'
-                      : 'bg-white text-text-secondary hover:bg-gray-100 border border-border'
-                  }`}
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${selectedDifficulty === filter.key
+                    ? 'bg-text-primary text-white'
+                    : 'bg-white text-text-secondary hover:bg-gray-100 border border-border'
+                    }`}
                 >
                   {filter.label}
                 </button>
@@ -143,13 +142,12 @@ export default function Practice() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-card border-2 transition-all ${
-                    isChecked
-                      ? isCorrect
-                        ? 'border-success'
-                        : 'border-error'
-                      : 'border-border hover:shadow-card-hover'
-                  }`}
+                  className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-card border-2 transition-all ${isChecked
+                    ? isCorrect
+                      ? 'border-success'
+                      : 'border-error'
+                    : 'border-border hover:shadow-card-hover'
+                    }`}
                 >
                   {/* Task Header */}
                   <div className="flex items-start justify-between mb-3 sm:mb-4">
@@ -157,9 +155,8 @@ export default function Practice() {
                       <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs font-bold ${getDifficultyColor(task.difficulty)}`}>
                         {getDifficultyLabel(task.difficulty)}
                       </span>
-                      <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs font-bold ${
-                        task.type === 'nod' ? 'bg-nod/10 text-nod-dark' : 'bg-nok/10 text-nok-dark'
-                      }`}>
+                      <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs font-bold ${task.type === 'nod' ? 'bg-nod/10 text-nod-dark' : 'bg-nok/10 text-nok-dark'
+                        }`}>
                         {task.type === 'nod' ? 'НОД' : 'НОК'}
                       </span>
                     </div>
@@ -187,24 +184,22 @@ export default function Practice() {
                       onChange={(e) => setAnswers(prev => ({ ...prev, [task.id]: e.target.value }))}
                       disabled={isChecked}
                       placeholder="Ваш ответ"
-                      className={`flex-1 input-field text-sm sm:text-base ${
-                        isChecked
-                          ? isCorrect
-                            ? 'border-success bg-success/5'
-                            : 'border-error bg-error/5'
-                          : ''
-                      }`}
+                      className={`flex-1 input-field text-sm sm:text-base ${isChecked
+                        ? isCorrect
+                          ? 'border-success bg-success/5'
+                          : 'border-error bg-error/5'
+                        : ''
+                        }`}
                     />
                     <motion.button
                       onClick={() => handleCheck(task.id, task.answer)}
                       disabled={isChecked || !answers[task.id]}
-                      className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-heading font-bold text-white text-sm sm:text-base transition-all touch-manipulation ${
-                        isChecked
-                          ? isCorrect
-                            ? 'bg-success'
-                            : 'bg-error'
-                          : 'bg-text-primary hover:bg-text-primary/90'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-heading font-bold text-white text-sm sm:text-base transition-all touch-manipulation ${isChecked
+                        ? isCorrect
+                          ? 'bg-success'
+                          : 'bg-error'
+                        : 'bg-text-primary hover:bg-text-primary/90'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
                       whileHover={!isChecked ? { scale: 1.05 } : {}}
                       whileTap={!isChecked ? { scale: 0.95 } : {}}
                     >
@@ -279,7 +274,7 @@ export default function Practice() {
                 <Target className="w-4 h-4 sm:w-5 sm:h-5 text-nod-dark" />
                 <span className="font-heading font-bold text-text-primary text-sm sm:text-base">Ваш прогресс</span>
               </div>
-              <span className="font-heading font-bold text-nod-dark text-sm sm:text-base">
+              <span className="font-heading font-bold text-nok-dark text-sm sm:text-base">
                 {Math.round((correctCount / tasks.length) * 100)}%
               </span>
             </div>
@@ -288,7 +283,7 @@ export default function Practice() {
                 initial={{ width: 0 }}
                 animate={{ width: `${(correctCount / tasks.length) * 100}%` }}
                 transition={{ duration: 0.5 }}
-                className="h-full bg-gradient-to-r from-nod to-nod-dark rounded-full"
+                className="h-full bg-gradient-to-r from-nok to-nok-dark rounded-full"
               />
             </div>
             <p className="text-center text-text-secondary mt-3 sm:mt-4 text-sm sm:text-base">

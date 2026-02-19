@@ -69,7 +69,7 @@ export default function Header() {
               whileTap={{ scale: 0.98 }}
               onClick={() => scrollToSection('#hero')}
             >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-nod to-nod-dark flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-nok to-nok-dark flex items-center justify-center shadow-lg">
                 <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div className="hidden sm:block">
@@ -158,8 +158,8 @@ export default function Header() {
                       onClick={() => scrollToSection(item.href)}
                       className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-heading font-semibold text-text-primary hover:bg-gray-50 transition-colors touch-manipulation"
                     >
-                      <div className="w-10 h-10 rounded-lg bg-nod/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-nod-dark" />
+                      <div className="w-10 h-10 rounded-lg bg-nok/10 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-nok-dark" />
                       </div>
                       <span className="text-base">{item.label}</span>
                     </motion.button>

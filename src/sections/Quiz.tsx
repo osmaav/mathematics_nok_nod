@@ -15,7 +15,7 @@ export default function Quiz() {
 
   const handleAnswer = (answerIndex: number) => {
     if (selectedAnswer !== null) return;
-    
+
     setSelectedAnswer(answerIndex);
     setAnswers(prev => ({ ...prev, [currentQuestion]: answerIndex }));
     setShowExplanation(true);
@@ -31,7 +31,7 @@ export default function Quiz() {
       const correctCount = Object.entries(answers).filter(
         ([qId, aId]) => questions[parseInt(qId)].correctAnswer === aId
       ).length;
-      
+
       if (correctCount >= 8) {
         confetti({
           particleCount: 100,
@@ -63,7 +63,7 @@ export default function Quiz() {
 
   const getGrade = (score: number) => {
     if (score >= 9) return { label: 'Отлично!', color: 'text-success', icon: Award, bg: 'bg-success/10' };
-    if (score >= 7) return { label: 'Хорошо!', color: 'text-nod-dark', icon: Star, bg: 'bg-nod/10' };
+    if (score >= 7) return { label: 'Хорошо!', color: 'text-nok-dark', icon: Star, bg: 'bg-nok/10' };
     if (score >= 5) return { label: 'Удовлетворительно', color: 'text-yellow-600', icon: Target, bg: 'bg-yellow-accent/30' };
     return { label: 'Нужно подучить', color: 'text-error', icon: HelpCircle, bg: 'bg-error/10' };
   };
@@ -112,9 +112,8 @@ export default function Quiz() {
                     initial={{ width: 0 }}
                     animate={{ width: `${(score / questions.length) * 100}%` }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    className={`h-full rounded-full ${
-                      score >= 7 ? 'bg-gradient-to-r from-nod to-success' : 'bg-gradient-to-r from-error to-yellow-500'
-                    }`}
+                    className={`h-full rounded-full ${score >= 7 ? 'bg-gradient-to-r from-nok to-success' : 'bg-gradient-to-r from-error to-yellow-500'
+                      }`}
                   />
                 </div>
 
@@ -125,7 +124,7 @@ export default function Quiz() {
                     {questions.map((q, i) => {
                       const userAnswer = answers[i];
                       const isCorrect = userAnswer === q.correctAnswer;
-                      
+
                       if (isCorrect) return null;
 
                       return (
@@ -213,7 +212,7 @@ export default function Quiz() {
                   <span className="text-xs sm:text-sm text-text-secondary">
                     Вопрос {currentQuestion + 1} из {questions.length}
                   </span>
-                  <span className="text-xs sm:text-sm font-heading font-bold text-nod-dark">
+                  <span className="text-xs sm:text-sm font-heading font-bold text-nok-dark">
                     {Math.round((currentQuestion / questions.length) * 100)}%
                   </span>
                 </div>
@@ -243,8 +242,8 @@ export default function Quiz() {
                     {question.options.map((option, index) => {
                       const isSelected = selectedAnswer === index;
                       const isCorrectAnswer = index === question.correctAnswer;
-                      
-                      let buttonClass = 'border-border hover:border-nod hover:bg-nod/5';
+
+                      let buttonClass = 'border-border hover:border-nok hover:bg-nod/5';
                       if (isAnswered) {
                         if (isCorrectAnswer) {
                           buttonClass = 'border-success bg-success/10';
@@ -254,7 +253,7 @@ export default function Quiz() {
                           buttonClass = 'border-border opacity-50';
                         }
                       } else if (isSelected) {
-                        buttonClass = 'border-nod bg-nod/10';
+                        buttonClass = 'border-nod bg-nok/10';
                       }
 
                       return (
@@ -267,17 +266,16 @@ export default function Quiz() {
                           whileTap={!isAnswered ? { scale: 0.98 } : {}}
                         >
                           <div className="flex items-center gap-2 sm:gap-3">
-                            <span className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-mono font-bold text-xs sm:text-sm ${
-                              isAnswered
-                                ? isCorrectAnswer
-                                  ? 'bg-success text-white'
-                                  : isSelected
-                                    ? 'bg-error text-white'
-                                    : 'bg-gray-100 text-text-secondary'
+                            <span className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-mono font-bold text-xs sm:text-sm ${isAnswered
+                              ? isCorrectAnswer
+                                ? 'bg-success text-white'
                                 : isSelected
-                                  ? 'bg-nod text-white'
+                                  ? 'bg-error text-white'
                                   : 'bg-gray-100 text-text-secondary'
-                            }`}>
+                              : isSelected
+                                ? 'bg-nod text-white'
+                                : 'bg-gray-100 text-text-secondary'
+                              }`}>
                               {String.fromCharCode(65 + index)}
                             </span>
                             <span className="font-medium text-text-primary text-sm sm:text-base">{option}</span>
@@ -297,9 +295,8 @@ export default function Quiz() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className={`p-3 sm:p-4 rounded-xl mb-4 sm:mb-6 ${
-                          isCorrect ? 'bg-success/10 border border-success/30' : 'bg-error/10 border border-error/30'
-                        }`}
+                        className={`p-3 sm:p-4 rounded-xl mb-4 sm:mb-6 ${isCorrect ? 'bg-success/10 border border-success/30' : 'bg-error/10 border border-error/30'
+                          }`}
                       >
                         <p className={`font-heading font-bold mb-1 sm:mb-2 text-sm sm:text-base ${isCorrect ? 'text-success' : 'text-error'}`}>
                           {isCorrect ? '✓ Правильно!' : '✗ Неверно'}

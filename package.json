@@ -1,12 +1,37 @@
 {
-  "name": "my-app",
-  "version": "0.0.0",
+  "name": "mathematics_nok_nod",
+  "version": "2.0.1",
   "private": true,
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "keywords": [
+    "Интерактивный",
+    "образовательный",
+    "сайт",
+    "по",
+    "теме",
+    "\"НОД",
+    "и",
+    "НОК\"",
+    "для",
+    "учеников",
+    "5",
+    "класса."
+  ],
+  "homepage": "https://github.com/osmaav/mathematics_nok_nod#readme",
+  "bugs": {
+    "url": "https://github.com/osmaav/mathematics_nok_nod/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osmaav/mathematics_nok_nod.git"
+  },
   "license": "ISC",
   "author": "@osmaav",
   "type": "module",
   "main": "eslint.config.js",
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
