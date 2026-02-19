@@ -173,7 +173,7 @@ export default function Calculator() {
                 setActiveTab(v as 'nod' | 'nok');
                 setResult(null);
               }}>
-                <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+                <TabsList className="grid w-full grid-cols-2 h-13">
                   <TabsTrigger value="nod" className="flex items-center justify-center gap-1.5 sm:gap-2 data-[state=active]:bg-nod data-[state=active]:text-white text-sm sm:text-base py-3">
                     <Divide className="w-4 h-4" />
                     <span className="hidden sm:inline">НОД</span>
