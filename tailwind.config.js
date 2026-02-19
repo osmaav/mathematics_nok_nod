@@ -39,12 +39,12 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         // Custom colors for NOK/NOD
-        nod: {
+        nok: {
           DEFAULT: "#4ECDC4",
           light: "#7EDDD7",
           dark: "#3BA99F",
         },
-        nok: {
+        nod: {
           DEFAULT: "#FF6B6B",
           light: "#FF9999",
           dark: "#E85555",
