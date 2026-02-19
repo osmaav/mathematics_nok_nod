@@ -61,23 +61,30 @@
 
 ## 📸 Скриншоты
 
-> **Примечание:** Для добавления скриншотов в релиз, сделайте скриншоты следующих разделов и прикрепите их к релизу на GitHub:
+1. **Главная страница**
+<img width="1126" height="864" alt="image" src="https://github.com/user-attachments/assets/806ded26-94af-4291-bebc-637a01baf76f" />
 
-### Рекомендуемые скриншоты:
-1. **Главная страница** — Hero секция с плавающими числами
-2. **Раздел Теория** — Карточки с определениями НОД и НОК
-3. **Раздел НОД** — Пример с делителями и пошаговое решение
-4. **Раздел НОК** — Пример с кратными и пошаговое решение
-5. **Калькулятор** — Интерфейс вычисления с пошаговым решением
-6. **Практика** — Сетка задач с фильтрами по сложности
-7. **Тест** — Вопрос с вариантами ответов
-8. **Результат теста** — Экран с оценкой и разбором ошибок
+2. **Раздел Теория**
+<img width="1126" height="864" alt="image" src="https://github.com/user-attachments/assets/00188fdf-acee-471c-8687-471eab10dbe9" />
 
-### Как добавить скриншоты:
-1. Откройте сайт в браузере
-2. Сделайте скриншоты каждого раздела (Cmd+Shift+4 на Mac или Win+Shift+S на Windows)
-3. Перейдите на страницу релиза на GitHub
-4. Отредактируйте релиз и перетащите скриншоты в описание
+3. **Раздел НОД**
+<img width="1126" height="959" alt="image" src="https://github.com/user-attachments/assets/00f44485-9f5c-4289-8de2-7f98071eae57" />
+
+4. **Раздел НОК**
+<img width="1126" height="959" alt="image" src="https://github.com/user-attachments/assets/18e7942e-22e4-48e5-bbb0-355facc76979" />
+
+5. **Калькулятор**
+<img width="994" height="955" alt="image" src="https://github.com/user-attachments/assets/eba28e28-7688-41ee-ad9f-936476d54711" />
+
+6. **Практика**
+<img width="994" height="955" alt="image" src="https://github.com/user-attachments/assets/8625bd69-c639-41a0-94b2-9ffa173a22eb" />
+   
+7. **Тест**
+<img width="994" height="756" alt="image" src="https://github.com/user-attachments/assets/4c8c54ab-64fb-4c88-8061-19ee51649026" />
+<img width="994" height="912" alt="image" src="https://github.com/user-attachments/assets/60308ca6-f84c-454b-b83a-0021d79a7e4c" />
+
+8. **Результат теста**
+<img width="994" height="782" alt="image" src="https://github.com/user-attachments/assets/f2c4358e-2464-4b4c-bbd0-3adbc16580af" />
 
 ---
 
