@@ -42,7 +42,7 @@ export default function Calculator() {
 
     const factors1 = primeFactorization(n1);
     const factors2 = primeFactorization(n2);
-    
+
     let value: number;
     let steps: string[];
 
@@ -70,21 +70,24 @@ export default function Calculator() {
     const steps = [];
     steps.push(`${n1} = ${formatFactorization(f1)}`);
     steps.push(`${n2} = ${formatFactorization(f2)}`);
-    
+
     const counts1: Record<number, number> = {};
     const counts2: Record<number, number> = {};
     f1.forEach(f => counts1[f] = (counts1[f] || 0) + 1);
     f2.forEach(f => counts2[f] = (counts2[f] || 0) + 1);
-    
+
     const commonFactors: string[] = [];
     const allPrimes = new Set([...Object.keys(counts1), ...Object.keys(counts2)].map(Number));
     allPrimes.forEach(prime => {
       if (counts1[prime] && counts2[prime]) {
         const minCount = Math.min(counts1[prime], counts2[prime]);
-        commonFactors.push(minCount === 1 ? `${prime}` : `${prime}^${minCount}`);
+        // commonFactors.push(minCount === 1 ? `${prime}` : `${prime}^${minCount}`);
+        // Вместо степени создаем строку из повторяющихся множителей
+        const repeatedPrime = Array(minCount).fill(prime).join(' × ');
+        commonFactors.push(repeatedPrime);
       }
     });
-    
+
     steps.push(`Общие множители: ${commonFactors.join(' × ')}`);
     steps.push(`НОД(${n1}, ${n2}) = ${commonFactors.join(' × ')} = ${res}`);
     return steps;
@@ -94,20 +97,27 @@ export default function Calculator() {
     const steps = [];
     steps.push(`${n1} = ${formatFactorization(f1)}`);
     steps.push(`${n2} = ${formatFactorization(f2)}`);
-    
+
     const counts1: Record<number, number> = {};
     const counts2: Record<number, number> = {};
     f1.forEach(f => counts1[f] = (counts1[f] || 0) + 1);
     f2.forEach(f => counts2[f] = (counts2[f] || 0) + 1);
-    
+
     const allFactors: string[] = [];
     const allPrimes = new Set([...Object.keys(counts1), ...Object.keys(counts2)].map(Number));
+    //   allFactors.push(maxCount === 1 ? `${prime}` : `${prime}^${maxCount}`);
+    // });
     allPrimes.forEach(prime => {
       const maxCount = Math.max(counts1[prime] || 0, counts2[prime] || 0);
-      allFactors.push(maxCount === 1 ? `${prime}` : `${prime}^${maxCount}`);
+      if (maxCount > 0) {
+        // Создаем массив длиной maxCount, заполняем его значением prime 
+        // и объединяем в строку через '×'
+        const repeatedPrime = Array(maxCount).fill(prime).join(' × ');
+        allFactors.push(repeatedPrime);
+      }
     });
-    
-    steps.push(`Все множители с макс. степенями: ${allFactors.join(' × ')}`);
+
+    steps.push(`Все уникальные множители: ${allFactors.join(' × ')}`);
     steps.push(`НОК(${n1}, ${n2}) = ${allFactors.join(' × ')} = ${res}`);
     return steps;
   };
@@ -236,9 +246,8 @@ export default function Calculator() {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mb-1 sm:mb-2 ${
-                            item.type === 'nod' ? 'bg-nod/10 text-nod-dark' : 'bg-nok/10 text-nok-dark'
-                          }`}>
+                          <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mb-1 sm:mb-2 ${item.type === 'nod' ? 'bg-nod/10 text-nod-dark' : 'bg-nok/10 text-nok-dark'
+                            }`}>
                             {item.type === 'nod' ? 'НОД' : 'НОК'}
                           </span>
                           <p className="font-mono text-xs sm:text-sm text-text-primary">

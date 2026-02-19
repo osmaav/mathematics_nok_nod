@@ -34,15 +34,15 @@ export default function NOKTheory() {
       )
     },
     {
-      title: 'Возьмём все множители с наибольшими степенями',
+      title: 'Возьмём все множители с большей степенью',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="text-text-secondary text-sm sm:text-base">Из разложений берём все простые множители с наибольшими показателями:</p>
+          <p className="text-text-secondary text-sm sm:text-base">Из первого разложения берём все простые множители и добавляем из второго которых еще нет:</p>
           <div className="flex gap-1.5 sm:gap-2 flex-wrap">
-            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">2²</span>
+            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">2 × 2</span>
             <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">3</span>
           </div>
-          <p className="text-text-secondary text-xs sm:text-sm">(взяли 2² из {exampleNumbers.a} и 3 из {exampleNumbers.b})</p>
+          <p className="text-text-secondary text-xs sm:text-sm">(взяли 2 × 2 из {exampleNumbers.a} и 3 из {exampleNumbers.b})</p>
         </div>
       )
     },
@@ -50,7 +50,7 @@ export default function NOKTheory() {
       title: 'Перемножим множители',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="font-mono text-base sm:text-lg">2² × 3 = 4 × 3 = <span className="text-nok-dark font-bold text-xl sm:text-2xl">12</span></p>
+          <p className="font-mono text-base sm:text-lg">2 × 2 × 3 = 4 × 3 = <span className="text-nok-dark font-bold text-xl sm:text-2xl">12</span></p>
           <p className="text-text-secondary text-sm sm:text-base">Значит, НОК({exampleNumbers.a}, {exampleNumbers.b}) = 12</p>
         </div>
       )
@@ -96,7 +96,7 @@ export default function NOKTheory() {
               <div>
                 <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-2 sm:mb-3">Определение</h3>
                 <p className="text-base sm:text-lg text-text-primary leading-relaxed">
-                  <span className="highlight-nok">Наименьшее общее кратное (НОК)</span> двух или нескольких натуральных чисел — 
+                  <span className="highlight-nok">Наименьшее общее кратное (НОК)</span> двух или нескольких натуральных чисел —
                   это <strong>наименьшее</strong> натуральное число, которое <strong>делится без остатка</strong> на каждое из данных чисел.
                 </p>
                 <p className="text-base sm:text-lg text-text-primary mt-2 sm:mt-3">
@@ -117,17 +117,16 @@ export default function NOKTheory() {
             {/* Multiples of 4 */}
             <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-card border border-border">
               <h4 className="font-heading font-bold text-lg sm:text-xl text-text-primary mb-3 sm:mb-4">
-                Кратные числа <span className="text-nok-dark">{exampleNumbers.a}</span>:
+                Числа кратные <span className="text-nok-dark">{exampleNumbers.a}</span>:
               </h4>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {multiplesA.slice(0, 10).map((m, i) => (
+                {multiplesA.slice(0, 9).map((m, i) => (
                   <span
                     key={i}
-                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${
-                      commonMultiples.includes(m)
-                        ? 'bg-nok text-white font-bold'
-                        : 'bg-gray-100 text-text-secondary'
-                    }`}
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${commonMultiples.includes(m)
+                      ? 'bg-nok text-white font-bold'
+                      : 'bg-gray-100 text-text-secondary'
+                      }`}
                   >
                     {m}
                   </span>
@@ -139,17 +138,16 @@ export default function NOKTheory() {
             {/* Multiples of 6 */}
             <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-card border border-border">
               <h4 className="font-heading font-bold text-lg sm:text-xl text-text-primary mb-3 sm:mb-4">
-                Кратные числа <span className="text-nok-dark">{exampleNumbers.b}</span>:
+                Числа кратные <span className="text-nok-dark">{exampleNumbers.b}</span>:
               </h4>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {multiplesB.slice(0, 10).map((m, i) => (
+                {multiplesB.slice(0, 7).map((m, i) => (
                   <span
                     key={i}
-                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${
-                      commonMultiples.includes(m)
-                        ? 'bg-nok text-white font-bold'
-                        : 'bg-gray-100 text-text-secondary'
-                    }`}
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${commonMultiples.includes(m)
+                      ? 'bg-nok text-white font-bold'
+                      : 'bg-gray-100 text-text-secondary'
+                      }`}
                   >
                     {m}
                   </span>
@@ -168,15 +166,14 @@ export default function NOKTheory() {
             className="bg-nok/5 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border-2 border-nok/30"
           >
             <h4 className="font-heading font-bold text-lg sm:text-xl text-text-primary mb-3 sm:mb-4">
-              Общие кратные (выделены цветом):
+              Общие кратные числа (выделены цветом):
             </h4>
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-              {commonMultiples.slice(0, 6).map((m, i) => (
+              {commonMultiples.slice(0, 3).map((m, i) => (
                 <span
                   key={i}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-mono font-bold text-sm sm:text-base ${
-                    i === 0 ? 'bg-nok text-white' : 'bg-nok/30 text-nok-dark'
-                  }`}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-mono font-bold text-sm sm:text-base ${i === 0 ? 'bg-nok text-white' : 'bg-nok/30 text-nok-dark'
+                    }`}
                 >
                   {m}
                 </span>
@@ -203,7 +200,7 @@ export default function NOKTheory() {
             <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-4 sm:mb-6">
               Алгоритм нахождения НОК
             </h3>
-            
+
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">1</div>
@@ -212,15 +209,15 @@ export default function NOKTheory() {
                   <p className="text-text-secondary text-sm sm:text-base">Разложить каждое число на произведение простых чисел</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">2</div>
                 <div>
-                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Вписать все множители первого числа</h4>
+                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Выписать все множители первого числа</h4>
                   <p className="text-text-secondary text-sm sm:text-base">Записать все простые множители из разложения первого числа</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">3</div>
                 <div>
@@ -228,7 +225,7 @@ export default function NOKTheory() {
                   <p className="text-text-secondary text-sm sm:text-base">Добавить множители из разложения второго числа, которых ещё нет</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">4</div>
                 <div>
@@ -281,11 +278,10 @@ export default function NOKTheory() {
                         <button
                           key={index}
                           onClick={() => setCurrentStep(index)}
-                          className={`flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${
-                            currentStep === index
-                              ? 'bg-nok text-white'
-                              : 'bg-white text-text-secondary hover:bg-gray-100'
-                          }`}
+                          className={`flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${currentStep === index
+                            ? 'bg-nok text-white'
+                            : 'bg-white text-text-secondary hover:bg-gray-100'
+                            }`}
                         >
                           Шаг {index + 1}
                         </button>

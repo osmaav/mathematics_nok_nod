@@ -37,7 +37,7 @@ export default function NODTheory() {
       title: 'Найдём общие простые множители',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="text-text-secondary text-sm sm:text-base">Общие множители: <span className="font-mono text-nod-dark font-bold">2² × 3</span></p>
+          <p className="text-text-secondary text-sm sm:text-base">Общие множители: <span className="font-mono text-nod-dark font-bold">2 и 3</span></p>
           <div className="flex gap-1.5 sm:gap-2 flex-wrap">
             {factorsA.map((f, i) => (
               <span key={i} className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm ${factorsB.includes(f) ? 'bg-nod/20 text-nod-dark' : 'bg-gray-100 text-text-secondary'}`}>
@@ -49,10 +49,10 @@ export default function NODTheory() {
       )
     },
     {
-      title: 'Перемножим общие множители',
+      title: 'Перемножим все общие множители',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="font-mono text-base sm:text-lg">2² × 3 = <span className="text-nod-dark font-bold text-xl sm:text-2xl">12</span></p>
+          <p className="font-mono text-base sm:text-lg">2 × 2 × 3 = <span className="text-nod-dark font-bold text-xl sm:text-2xl">12</span></p>
           <p className="text-text-secondary text-sm sm:text-base">Значит, НОД({exampleNumbers.a}, {exampleNumbers.b}) = 12</p>
         </div>
       )
@@ -98,7 +98,7 @@ export default function NODTheory() {
               <div>
                 <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-2 sm:mb-3">Определение</h3>
                 <p className="text-base sm:text-lg text-text-primary leading-relaxed">
-                  <span className="highlight-nod">Наибольший общий делитель (НОД)</span> двух или нескольких натуральных чисел — 
+                  <span className="highlight-nod">Наибольший общий делитель (НОД)</span> двух или нескольких натуральных чисел —
                   это <strong>наибольшее</strong> из натуральных чисел, на которое делятся данные числа <strong>без остатка</strong>.
                 </p>
                 <p className="text-base sm:text-lg text-text-primary mt-2 sm:mt-3">
@@ -125,11 +125,10 @@ export default function NODTheory() {
                 {divisorsA.map((d) => (
                   <span
                     key={d}
-                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${
-                      commonDivisors.includes(d)
-                        ? 'bg-nod text-white font-bold'
-                        : 'bg-gray-100 text-text-secondary'
-                    }`}
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${commonDivisors.includes(d)
+                      ? 'bg-nod text-white font-bold'
+                      : 'bg-gray-100 text-text-secondary'
+                      }`}
                   >
                     {d}
                   </span>
@@ -146,11 +145,10 @@ export default function NODTheory() {
                 {divisorsB.map((d) => (
                   <span
                     key={d}
-                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${
-                      commonDivisors.includes(d)
-                        ? 'bg-nod text-white font-bold'
-                        : 'bg-gray-100 text-text-secondary'
-                    }`}
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-mono text-xs sm:text-sm ${commonDivisors.includes(d)
+                      ? 'bg-nod text-white font-bold'
+                      : 'bg-gray-100 text-text-secondary'
+                      }`}
                   >
                     {d}
                   </span>
@@ -197,7 +195,7 @@ export default function NODTheory() {
             <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-4 sm:mb-6">
               Алгоритм нахождения НОД
             </h3>
-            
+
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nod flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">1</div>
@@ -206,7 +204,7 @@ export default function NODTheory() {
                   <p className="text-text-secondary text-sm sm:text-base">Разложить каждое число на произведение простых чисел</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nod flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">2</div>
                 <div>
@@ -214,12 +212,12 @@ export default function NODTheory() {
                   <p className="text-text-secondary text-sm sm:text-base">Найти простые множители, которые есть в разложении каждого числа</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nod flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">3</div>
                 <div>
                   <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Перемножить общие множители</h4>
-                  <p className="text-text-secondary text-sm sm:text-base">Перемножить общие простые множители с наименьшими показателями степеней</p>
+                  <p className="text-text-secondary text-sm sm:text-base">Перемножить общие простые множители</p>
                 </div>
               </div>
             </div>
@@ -267,11 +265,10 @@ export default function NODTheory() {
                         <button
                           key={index}
                           onClick={() => setCurrentStep(index)}
-                          className={`flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${
-                            currentStep === index
-                              ? 'bg-nod text-white'
-                              : 'bg-white text-text-secondary hover:bg-gray-100'
-                          }`}
+                          className={`flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${currentStep === index
+                            ? 'bg-nod text-white'
+                            : 'bg-white text-text-secondary hover:bg-gray-100'
+                            }`}
                         >
                           Шаг {index + 1}
                         </button>
