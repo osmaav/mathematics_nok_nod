@@ -299,3 +299,14 @@
 .no-callout {
   -webkit-touch-callout: none;
 }
+
+/* иконка подстраиваеться под любой font-size родителя */
+.inline-icon {
+  display: inline-block;
+  /* Высота в 1em делает иконку равной высоте строки текста */
+  height: 1em;
+  width: auto; 
+  /* Отступы */
+  padding-right: 0.25em;
+}
+

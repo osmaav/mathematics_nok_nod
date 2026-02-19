@@ -19,8 +19,8 @@ export default function Hero() {
   };
 
   return (
-    <section 
-      id="hero" 
+    <section
+      id="hero"
       className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white"
       style={{ paddingTop: 'calc(4rem + env(safe-area-inset-top))' }}
     >
@@ -30,19 +30,18 @@ export default function Hero() {
           <motion.div
             key={index}
             initial={{ opacity: 0, scale: 0 }}
-            animate={{ 
-              opacity: 0.12, 
+            animate={{
+              opacity: 0.12,
               scale: 1,
               y: [0, -15, 0],
             }}
-            transition={{ 
+            transition={{
               opacity: { delay: item.delay, duration: 0.5 },
               scale: { delay: item.delay, duration: 0.5 },
               y: { delay: item.delay, duration: 3, repeat: Infinity, ease: 'easeInOut' }
             }}
-            className={`absolute font-heading font-bold ${item.size} ${
-              item.color === 'nod' ? 'text-nod' : 'text-nok'
-            }`}
+            className={`absolute font-heading font-bold ${item.size} ${item.color === 'nod' ? 'text-nod' : 'text-nok'
+              }`}
             style={{ left: item.x, top: item.y }}
           >
             {item.num}
@@ -71,11 +70,10 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-text-primary mb-4 sm:mb-6"
           >
-            <span className="text-gradient-nod">НОК</span>
+            <span className="text-gradient-nod">НОД</span>
             <span className="mx-2 sm:mx-4 text-text-secondary">и</span>
-            <span className="text-gradient-nok">НОД</span>
+            <span className="text-gradient-nok">НОК</span>
           </motion.h1>
-
           {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 30 }}
