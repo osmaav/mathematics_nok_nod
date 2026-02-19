@@ -158,20 +158,303 @@ export function getCommonMultiples(a: number, b: number, limit: number = 200): n
   return multiplesA.filter(m => multiplesB.includes(m));
 }
 
+// Helper function to generate hint for NOD
+function generateNODHint(numbers: number[]): string {
+  if (numbers.length === 2) {
+    const [a, b] = numbers;
+    const factorsA = formatFactorization(primeFactorization(a));
+    const factorsB = formatFactorization(primeFactorization(b));
+    return `Разложите числа на простые множители: ${a} = ${factorsA}, ${b} = ${factorsB}`;
+  } else {
+    return numbers.map(n => `${n} = ${formatFactorization(primeFactorization(n))}`).join(', ');
+  }
+}
+
+// Helper function to generate hint for NOK
+function generateNOKHint(numbers: number[]): string {
+  if (numbers.length === 2) {
+    const [a, b] = numbers;
+    const factorsA = formatFactorization(primeFactorization(a));
+    const factorsB = formatFactorization(primeFactorization(b));
+    return `Разложите числа: ${a} = ${factorsA}, ${b} = ${factorsB}. Выберите каждый простой множитель с наибольшим количеством повторений.`;
+  } else {
+    return numbers.map(n => `${n} = ${formatFactorization(primeFactorization(n))}`).join(', ');
+  }
+}
+
+// Helper function to generate solution string for NOD
+function generateNODSolution(numbers: number[]): string {
+  const nod = calculateNODMultiple(numbers);
+  const factorsA = primeFactorization(numbers[0]);
+  const factorsB = primeFactorization(numbers[1]);
+  
+  // Find common factors
+  const countsA: Record<number, number> = {};
+  const countsB: Record<number, number> = {};
+  
+  factorsA.forEach(f => countsA[f] = (countsA[f] || 0) + 1);
+  factorsB.forEach(f => countsB[f] = (countsB[f] || 0) + 1);
+  
+  const commonFactors: number[] = [];
+  const allPrimes = new Set([...Object.keys(countsA), ...Object.keys(countsB)].map(Number));
+  
+  allPrimes.forEach(prime => {
+    if (countsA[prime] && countsB[prime]) {
+      const minCount = Math.min(countsA[prime], countsB[prime]);
+      for (let i = 0; i < minCount; i++) {
+        commonFactors.push(prime);
+      }
+    }
+  });
+  
+  const commonFactorsStr = commonFactors.length > 0 ? commonFactors.join(' × ') : '1';
+  
+  if (numbers.length === 2) {
+    // Если общий множитель один или НОД = 1, не дублируем его
+    if (commonFactors.length <= 1) {
+      return `НОД(${numbers.join(', ')}) = ${nod}`;
+    }
+    return `НОД(${numbers.join(', ')}) = ${commonFactorsStr} = ${nod}`;
+  } else {
+    return `НОД(${numbers.join(', ')}) = ${nod}`;
+  }
+}
+
+// Helper function to generate solution string for NOK
+function generateNOKSolution(numbers: number[]): string {
+  const nok = calculateNOKMultiple(numbers);
+  
+  if (numbers.length === 2) {
+    const factorsA = primeFactorization(numbers[0]);
+    const factorsB = primeFactorization(numbers[1]);
+    
+    const countsA: Record<number, number> = {};
+    const countsB: Record<number, number> = {};
+    
+    factorsA.forEach(f => countsA[f] = (countsA[f] || 0) + 1);
+    factorsB.forEach(f => countsB[f] = (countsB[f] || 0) + 1);
+    
+    const maxFactors: number[] = [];
+    const allPrimes = new Set([...Object.keys(countsA), ...Object.keys(countsB)].map(Number));
+    
+    allPrimes.forEach(prime => {
+      const maxCount = Math.max(countsA[prime] || 0, countsB[prime] || 0);
+      for (let i = 0; i < maxCount; i++) {
+        maxFactors.push(prime);
+      }
+    });
+    
+    const maxFactorsStr = maxFactors.join(' × ');
+    // Если множитель один, не дублируем его
+    if (maxFactors.length <= 1) {
+      return `НОК(${numbers.join(', ')}) = ${nok}`;
+    }
+    return `НОК(${numbers.join(', ')}) = ${maxFactorsStr} = ${nok}`;
+  } else {
+    return `НОК(${numbers.join(', ')}) = ${nok}`;
+  }
+}
+
+// Generate random numbers for practice tasks
+function generateRandomNumbers(difficulty: 'easy' | 'medium' | 'hard', count: number = 2): number[] {
+  const numbers: number[] = [];
+  
+  switch (difficulty) {
+    case 'easy':
+      // Numbers from 2 to 20
+      while (numbers.length < count) {
+        const num = Math.floor(Math.random() * 19) + 2;
+        if (!numbers.includes(num)) {
+          numbers.push(num);
+        }
+      }
+      break;
+    case 'medium':
+      // Numbers from 10 to 50
+      while (numbers.length < count) {
+        const num = Math.floor(Math.random() * 41) + 10;
+        if (!numbers.includes(num)) {
+          numbers.push(num);
+        }
+      }
+      break;
+    case 'hard':
+      // Numbers from 20 to 100, or 3 numbers
+      const numCount = Math.random() > 0.5 ? 3 : 2;
+      while (numbers.length < numCount) {
+        const num = Math.floor(Math.random() * 81) + 20;
+        if (!numbers.includes(num)) {
+          numbers.push(num);
+        }
+      }
+      break;
+  }
+  
+  return numbers.sort((a, b) => a - b);
+}
+
 // Generate practice tasks
 export function generatePracticeTasks(): import('@/types').PracticeTask[] {
-  return [
-    { id: 1, type: 'nod', difficulty: 'easy', numbers: [12, 18], answer: 6, hint: 'Разложите числа на простые множители: 12 = 2 × 2 × 3, 18 = 2 × 3 × 3', solution: 'НОД(12, 18) = 2 × 3 = 6' },
-    { id: 2, type: 'nod', difficulty: 'easy', numbers: [24, 36], answer: 12, hint: 'Разложите числа на простые множители: 24 = 2 × 2 × 2 × 3, 36 = 2 × 2 × 3 × 3', solution: 'НОД(24, 36) = 2 × 2 × 3 = 12' },
-    { id: 3, type: 'nod', difficulty: 'easy', numbers: [15, 25], answer: 5, hint: 'Разложите числа на простые множители: 15 = 3 × 5, 25 = 5 × 5', solution: 'НОД(15, 25) = 5' },
-    { id: 4, type: 'nok', difficulty: 'easy', numbers: [4, 6], answer: 12, hint: 'Кратные 4: 4, 8, 12, 16... Кратные 6: 6, 12, 18...', solution: 'НОК(4, 6) = 12' },
-    { id: 5, type: 'nok', difficulty: 'easy', numbers: [8, 12], answer: 24, hint: 'Разложите числа: 8 = 2 × 2 × 2, 12 = 2 × 2 × 3. Возьмите максимальные степени.', solution: 'НОК(8, 12) = 2 × 2 × 2 × 3 = 24' },
-    { id: 6, type: 'nok', difficulty: 'easy', numbers: [9, 15], answer: 45, hint: 'Разложите числа: 9 = 3 × 3, 15 = 3 × 5', solution: 'НОК(9, 15) = 3 × 3 × 5 = 45' },
-    { id: 7, type: 'nod', difficulty: 'medium', numbers: [48, 72], answer: 24, hint: '48 = 2 × 2 × 2 × 2 × 3, 72 = 2 × 2 × 2 × 3 × 3', solution: 'НОД(48, 72) = 2 × 2 × 2 × 3 = 24' },
-    { id: 8, type: 'nok', difficulty: 'medium', numbers: [16, 24], answer: 48, hint: '16 = 2 × 2 × 2 × 2, 24 = 2 × 2 × 2 × 3', solution: 'НОК(16, 24) = 2 × 2 × 2 × 2 × 3 = 48' },
-    { id: 9, type: 'nod', difficulty: 'hard', numbers: [120, 180, 240], answer: 60, hint: '120 = 2 × 2 × 2 × 3 × 5, 180 = 2 × 2 × 3 × 3 × 5, 240 = 2 × 2 × 2 × 2 × 3 × 5', solution: 'НОД(120, 180, 240) = 2 × 2 × 3 × 5 = 60' },
-    { id: 10, type: 'nok', difficulty: 'hard', numbers: [6, 8, 12], answer: 24, hint: '6 = 2 × 3, 8 = 2 × 2 × 2, 12 = 2 × 2 × 3', solution: 'НОК(6, 8, 12) = 2 × 2 × 2 × 3 = 24' },
-  ];
+  const tasks: import('@/types').PracticeTask[] = [];
+  let id = 1;
+
+  // Helper to check if two numbers are coprime (НОД = 1)
+  const areCoprime = (nums: number[]): boolean => calculateNODMultiple(nums) === 1;
+
+  // Easy: 10 NOD + 10 NOK = 20 tasks (max 2 coprime pairs each)
+  let nodEasyCoprimeCount = 0;
+  let nokEasyCoprimeCount = 0;
+  
+  for (let i = 0; i < 10; i++) {
+    let numbers = generateRandomNumbers('easy', 2);
+    // Limit coprime pairs to max 2
+    if (nodEasyCoprimeCount >= 2 && areCoprime(numbers)) {
+      // Keep generating until we get non-coprime pair
+      let attempts = 0;
+      while (areCoprime(numbers) && attempts < 50) {
+        numbers = generateRandomNumbers('easy', 2);
+        attempts++;
+      }
+    }
+    if (areCoprime(numbers)) nodEasyCoprimeCount++;
+    
+    const answer = calculateNODMultiple(numbers);
+    tasks.push({
+      id: id++,
+      type: 'nod',
+      difficulty: 'easy',
+      numbers,
+      answer,
+      hint: generateNODHint(numbers),
+      solution: generateNODSolution(numbers)
+    });
+  }
+
+  for (let i = 0; i < 10; i++) {
+    let numbers = generateRandomNumbers('easy', 2);
+    // Limit coprime pairs to max 2
+    if (nokEasyCoprimeCount >= 2 && areCoprime(numbers)) {
+      let attempts = 0;
+      while (areCoprime(numbers) && attempts < 50) {
+        numbers = generateRandomNumbers('easy', 2);
+        attempts++;
+      }
+    }
+    if (areCoprime(numbers)) nokEasyCoprimeCount++;
+    
+    const answer = calculateNOKMultiple(numbers);
+    tasks.push({
+      id: id++,
+      type: 'nok',
+      difficulty: 'easy',
+      numbers,
+      answer,
+      hint: generateNOKHint(numbers),
+      solution: generateNOKSolution(numbers)
+    });
+  }
+
+  // Medium: 10 NOD + 10 NOK = 20 tasks (max 2 coprime pairs each)
+  let nodMediumCoprimeCount = 0;
+  let nokMediumCoprimeCount = 0;
+  
+  for (let i = 0; i < 10; i++) {
+    let numbers = generateRandomNumbers('medium', 2);
+    if (nodMediumCoprimeCount >= 2 && areCoprime(numbers)) {
+      let attempts = 0;
+      while (areCoprime(numbers) && attempts < 50) {
+        numbers = generateRandomNumbers('medium', 2);
+        attempts++;
+      }
+    }
+    if (areCoprime(numbers)) nodMediumCoprimeCount++;
+    
+    const answer = calculateNODMultiple(numbers);
+    tasks.push({
+      id: id++,
+      type: 'nod',
+      difficulty: 'medium',
+      numbers,
+      answer,
+      hint: generateNODHint(numbers),
+      solution: generateNODSolution(numbers)
+    });
+  }
+
+  for (let i = 0; i < 10; i++) {
+    let numbers = generateRandomNumbers('medium', 2);
+    if (nokMediumCoprimeCount >= 2 && areCoprime(numbers)) {
+      let attempts = 0;
+      while (areCoprime(numbers) && attempts < 50) {
+        numbers = generateRandomNumbers('medium', 2);
+        attempts++;
+      }
+    }
+    if (areCoprime(numbers)) nokMediumCoprimeCount++;
+    
+    const answer = calculateNOKMultiple(numbers);
+    tasks.push({
+      id: id++,
+      type: 'nok',
+      difficulty: 'medium',
+      numbers,
+      answer,
+      hint: generateNOKHint(numbers),
+      solution: generateNOKSolution(numbers)
+    });
+  }
+
+  // Hard: 10 NOD + 10 NOK = 20 tasks (max 2 coprime pairs each)
+  let nodHardCoprimeCount = 0;
+  let nokHardCoprimeCount = 0;
+  
+  for (let i = 0; i < 10; i++) {
+    let numbers = generateRandomNumbers('hard', Math.random() > 0.5 ? 3 : 2);
+    if (nodHardCoprimeCount >= 2 && areCoprime(numbers)) {
+      let attempts = 0;
+      while (areCoprime(numbers) && attempts < 50) {
+        numbers = generateRandomNumbers('hard', Math.random() > 0.5 ? 3 : 2);
+        attempts++;
+      }
+    }
+    if (areCoprime(numbers)) nodHardCoprimeCount++;
+    
+    const answer = calculateNODMultiple(numbers);
+    tasks.push({
+      id: id++,
+      type: 'nod',
+      difficulty: 'hard',
+      numbers,
+      answer,
+      hint: generateNODHint(numbers),
+      solution: generateNODSolution(numbers)
+    });
+  }
+
+  for (let i = 0; i < 10; i++) {
+    let numbers = generateRandomNumbers('hard', Math.random() > 0.5 ? 3 : 2);
+    if (nokHardCoprimeCount >= 2 && areCoprime(numbers)) {
+      let attempts = 0;
+      while (areCoprime(numbers) && attempts < 50) {
+        numbers = generateRandomNumbers('hard', Math.random() > 0.5 ? 3 : 2);
+        attempts++;
+      }
+    }
+    if (areCoprime(numbers)) nokHardCoprimeCount++;
+    
+    const answer = calculateNOKMultiple(numbers);
+    tasks.push({
+      id: id++,
+      type: 'nok',
+      difficulty: 'hard',
+      numbers,
+      answer,
+      hint: generateNOKHint(numbers),
+      solution: generateNOKSolution(numbers)
+    });
+  }
+
+  return tasks;
 }
 
 // Generate quiz questions

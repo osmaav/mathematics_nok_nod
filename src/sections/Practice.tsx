@@ -182,6 +182,11 @@ export default function Practice() {
                       type="number"
                       value={answers[task.id] || ''}
                       onChange={(e) => setAnswers(prev => ({ ...prev, [task.id]: e.target.value }))}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !isChecked && answers[task.id]) {
+                          handleCheck(task.id, task.answer);
+                        }
+                      }}
                       disabled={isChecked}
                       placeholder="Ваш ответ"
                       className={`flex-1 input-field text-sm sm:text-base ${isChecked
