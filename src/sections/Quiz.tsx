@@ -220,7 +220,7 @@ export default function Quiz() {
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                    className="h-full bg-gradient-to-r from-nod to-nok rounded-full"
+                    className="h-full bg-gradient-to-r from-nok/5 to-nok rounded-full"
                   />
                 </div>
               </div>
@@ -243,7 +243,7 @@ export default function Quiz() {
                       const isSelected = selectedAnswer === index;
                       const isCorrectAnswer = index === question.correctAnswer;
 
-                      let buttonClass = 'border-border hover:border-nok hover:bg-nod/5';
+                      let buttonClass = 'border-border hover:border-nok hover:bg-nok/5';
                       if (isAnswered) {
                         if (isCorrectAnswer) {
                           buttonClass = 'border-success bg-success/10';
