@@ -18,7 +18,7 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-      
+
       // Determine active section
       const sections = navItems.map(item => item.href.slice(1));
       for (const section of sections.reverse()) {
@@ -51,11 +51,10 @@ export default function Header() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-top ${
-          isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-lg' 
-            : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-top ${isScrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-lg'
+          : 'bg-transparent'
+          }`}
         style={{
           paddingTop: 'max(0.75rem, env(safe-area-inset-top))',
           paddingBottom: '0.75rem',
@@ -64,7 +63,7 @@ export default function Header() {
         <div className="section-container">
           <div className="section-inner flex items-center justify-between">
             {/* Logo */}
-            <motion.div 
+            <motion.div
               className="flex items-center gap-2 sm:gap-3 cursor-pointer touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -90,11 +89,10 @@ export default function Header() {
                   <motion.button
                     key={item.href}
                     onClick={() => scrollToSection(item.href)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl font-heading font-semibold text-sm transition-all duration-300 ${
-                      isActive
-                        ? 'bg-nod/10 text-nod-dark'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-gray-100'
-                    }`}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl font-heading font-semibold text-sm transition-all duration-300 ${isActive
+                      ? 'bg-nod/10 text-nod-dark'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-gray-100'
+                      }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >

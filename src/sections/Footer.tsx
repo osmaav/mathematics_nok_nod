@@ -4,12 +4,12 @@ import { Calculator, BookOpen, GraduationCap, Mail, ExternalLink } from 'lucide-
 const resources = [
   { label: 'ФГОС начального общего образования', href: 'https://fgos.ru/' },
   { label: 'Российская образовательная платформа', href: 'https://resh.edu.ru/' },
-  { label: 'ЯКласс - математика 5 класс', href: 'https://yaklass.ru/' },
+  { label: 'ЯКласс - математика 5 класс', href: 'https://yaklass.ru/' }
 ];
 
 export default function Footer() {
   return (
-    <footer 
+    <footer
       className="bg-text-primary text-white py-10 sm:py-16"
       style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }}
     >
@@ -33,7 +33,7 @@ export default function Footer() {
                 </div>
               </div>
               <p className="text-white/70 leading-relaxed text-sm sm:text-base">
-                Интерактивный образовательный сайт по теме "НОК и НОД" 
+                Интерактивный образовательный сайт по теме "НОК и НОД"
                 для учеников 5 класса. Соответствует программе ФГОС России.
               </p>
             </motion.div>
@@ -103,11 +103,20 @@ export default function Footer() {
           <div className="border-t border-white/10 pt-6 sm:pt-8">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
               <p className="text-white/50 text-xs sm:text-sm text-center sm:text-left">
-                © 2025 Образовательный сайт по математике. Соответствует ФГОС России.
+                2026 Образовательный сайт по математике.
               </p>
               <div className="flex items-center gap-1.5 sm:gap-2 text-white/50 text-xs sm:text-sm">
-                <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>Для обратной связи обратитесь к учителю математики</span>
+                <span>© разработан<span> </span>
+                  <a
+                    href="https://t.me/osmaav"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-nod transition-colors inline-flex items-center gap-1"
+                  >
+                    osmaav
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                  <span> </span>для собстенного ребенка</span>
               </div>
             </div>
           </div>
