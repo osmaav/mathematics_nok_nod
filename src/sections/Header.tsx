@@ -1,36 +1,25 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calculator, Menu, X, BookOpen, Divide, Percent, CheckSquare, Home } from 'lucide-react';
+import { useActiveSection } from '@/contexts/ActiveSectionContext';
 
 const navItems = [
-  { label: 'Главная', href: '#hero', icon: Home },
-  { label: 'Теория', href: '#theory', icon: BookOpen },
-  { label: 'НОД', href: '#nod', icon: Divide },
-  { label: 'НОК', href: '#nok', icon: Percent },
-  { label: 'Практика', href: '#practice', icon: CheckSquare },
+  { label: 'Главная', href: '#hero', icon: Home, color: 'gray', hoverBg: 'bg-gray-100' },
+  { label: 'Теория', href: '#theory-intro', icon: BookOpen, color: 'blue', hoverBg: 'bg-blue-100', hoverText: 'text-blue-600' },
+  { label: 'НОД', href: '#nod', icon: Divide, color: 'nod', hoverBg: 'bg-nod/10', hoverText: 'text-nod-dark' },
+  { label: 'НОК', href: '#nok', icon: Percent, color: 'nok', hoverBg: 'bg-nok/10', hoverText: 'text-nok-dark' },
+  { label: 'Калькулятор', href: '#calculator', icon: Calculator, color: 'purple', hoverBg: 'bg-purple-100', hoverText: 'text-purple-600' },
+  { label: 'Практика', href: '#practice', icon: CheckSquare, color: 'success', hoverBg: 'bg-success/10', hoverText: 'text-success' },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
+  const { activeSection, setActiveSection } = useActiveSection();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-
-      // Determine active section
-      const sections = navItems.map(item => item.href.slice(1));
-      for (const section of sections.reverse()) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -90,7 +79,7 @@ export default function Header() {
                     key={item.href}
                     onClick={() => scrollToSection(item.href)}
                     className={`flex items-center gap-2 px-3 py-2.5 rounded-xl font-heading font-semibold text-sm transition-all duration-300 ${isActive
-                      ? 'bg-nod/10 text-nod-dark'
+                      ? `${item.hoverBg} ${item.hoverText}`
                       : 'text-text-secondary hover:text-text-primary hover:bg-gray-100'
                       }`}
                     whileHover={{ scale: 1.05 }}
@@ -156,10 +145,10 @@ export default function Header() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
                       onClick={() => scrollToSection(item.href)}
-                      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-heading font-semibold text-text-primary hover:bg-gray-50 transition-colors touch-manipulation"
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-heading font-semibold text-text-primary transition-colors touch-manipulation ${item.hoverBg}`}
                     >
-                      <div className="w-10 h-10 rounded-lg bg-nok/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-nok-dark" />
+                      <div className={`w-10 h-10 rounded-lg ${item.hoverBg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-5 h-5 ${item.hoverText}`} />
                       </div>
                       <span className="text-base">{item.label}</span>
                     </motion.button>

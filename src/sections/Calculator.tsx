@@ -4,6 +4,7 @@ import { Calculator as CalcIcon, Divide, Percent, RotateCcw, ArrowRight, Sparkle
 import { calculateNOD, calculateNOK, primeFactorization, formatFactorization } from '@/lib/math';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
 interface CalculationHistory {
   id: number;
@@ -13,6 +14,8 @@ interface CalculationHistory {
 }
 
 export default function Calculator() {
+  useSectionVisibility({ sectionId: 'calculator' });
+  
   const [activeTab, setActiveTab] = useState<'nod' | 'nok'>('nod');
   const [num1, setNum1] = useState<string>('');
   const [num2, setNum2] = useState<string>('');
@@ -148,7 +151,7 @@ export default function Calculator() {
             transition={{ duration: 0.5 }}
             className="text-center mb-8 sm:mb-12"
           >
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-yellow-accent/30 text-text-primary font-heading font-semibold text-xs sm:text-sm mb-4">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-purple-100 text-purple-600 font-heading font-semibold text-xs sm:text-sm mb-4">
               <CalcIcon className="w-3 h-3 sm:w-4 sm:h-4" />
               Калькулятор
             </div>

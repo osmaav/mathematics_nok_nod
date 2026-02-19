@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Divide, ChevronDown, Lightbulb, CheckCircle2, ArrowRight } from 'lucide-react';
 import { getDivisors, getCommonDivisors, primeFactorization, formatFactorization } from '@/lib/math';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
 const exampleNumbers = { a: 36, b: 48 };
 
 export default function NODTheory() {
+  useSectionVisibility({ sectionId: 'nod' });
   const [showExample, setShowExample] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 

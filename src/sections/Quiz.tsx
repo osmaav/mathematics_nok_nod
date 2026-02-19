@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Trophy, RotateCcw, HelpCircle, Sparkles, Star, Award, Target } from 'lucide-react';
 import { generateQuizQuestions } from '@/lib/math';
 import confetti from 'canvas-confetti';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
 const questions = generateQuizQuestions();
 
 export default function Quiz() {
+  useSectionVisibility({ sectionId: 'quiz' });
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowDown, Divide, Percent, Sparkles } from 'lucide-react';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
 const floatingNumbers = [
   { num: 12, x: '5%', y: '15%', delay: 0, color: 'nod', size: 'text-6xl sm:text-8xl' },
@@ -17,6 +18,8 @@ export default function Hero() {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useSectionVisibility({ sectionId: 'hero' });
 
   return (
     <section

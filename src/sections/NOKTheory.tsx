@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Percent, ChevronDown, Lightbulb, CheckCircle2, ArrowRight } from 'lucide-react';
 import { getMultiples, getCommonMultiples, primeFactorization, formatFactorization } from '@/lib/math';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
 const exampleNumbers = { a: 4, b: 6 };
 
 export default function NOKTheory() {
+  useSectionVisibility({ sectionId: 'nok' });
   const [showExample, setShowExample] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 

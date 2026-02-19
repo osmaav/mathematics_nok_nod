@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckSquare, Lightbulb, Eye, CheckCircle2, XCircle, RotateCcw, Trophy, Target } from 'lucide-react';
 import { generatePracticeTasks } from '@/lib/math';
 import { Input } from '@/components/ui/input';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 
-const tasks = generatePracticeTasks();
+const allTasks = generatePracticeTasks();
 
 export default function Practice() {
+  useSectionVisibility({ sectionId: 'practice' });
+  
   const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'easy' | 'medium' | 'hard'>('all');
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [checked, setChecked] = useState<Record<number, boolean>>({});
@@ -14,9 +17,12 @@ export default function Practice() {
   const [showSolutions, setShowSolutions] = useState<Record<number, boolean>>({});
   const [correctCount, setCorrectCount] = useState(0);
 
-  const filteredTasks = selectedDifficulty === 'all'
-    ? tasks
-    : tasks.filter(t => t.difficulty === selectedDifficulty);
+  const filteredTasks = useMemo(() => 
+    selectedDifficulty === 'all'
+      ? allTasks
+      : allTasks.filter(t => t.difficulty === selectedDifficulty),
+    [selectedDifficulty]
+  );
 
   const handleCheck = (taskId: number, correctAnswer: number) => {
     const userAnswer = parseInt(answers[taskId]);
@@ -31,6 +37,15 @@ export default function Practice() {
   };
 
   const handleReset = () => {
+    setAnswers({});
+    setChecked({});
+    setShowHints({});
+    setShowSolutions({});
+    setCorrectCount(0);
+  };
+
+  const handleDifficultyChange = (difficulty: 'all' | 'easy' | 'medium' | 'hard') => {
+    setSelectedDifficulty(difficulty);
     setAnswers({});
     setChecked({});
     setShowHints({});
@@ -98,7 +113,7 @@ export default function Practice() {
               ].map((filter) => (
                 <button
                   key={filter.key}
-                  onClick={() => setSelectedDifficulty(filter.key as any)}
+                  onClick={() => handleDifficultyChange(filter.key as any)}
                   className={`px-3 sm:px-4 py-2 rounded-xl font-heading font-semibold text-xs sm:text-sm transition-all touch-manipulation ${selectedDifficulty === filter.key
                     ? 'bg-text-primary text-white'
                     : 'bg-white text-text-secondary hover:bg-gray-100 border border-border'
@@ -114,7 +129,7 @@ export default function Practice() {
               <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-white rounded-xl border border-border">
                 <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-accent" />
                 <span className="font-heading font-bold text-text-primary text-sm sm:text-base">
-                  {correctCount} / {tasks.length}
+                  {correctCount} / {filteredTasks.length}
                 </span>
               </div>
               <button
@@ -280,20 +295,20 @@ export default function Practice() {
                 <span className="font-heading font-bold text-text-primary text-sm sm:text-base">Ваш прогресс</span>
               </div>
               <span className="font-heading font-bold text-nok-dark text-sm sm:text-base">
-                {Math.round((correctCount / tasks.length) * 100)}%
+                {filteredTasks.length > 0 ? Math.round((correctCount / filteredTasks.length) * 100) : 0}%
               </span>
             </div>
             <div className="h-3 sm:h-4 bg-gray-100 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${(correctCount / tasks.length) * 100}%` }}
+                animate={{ width: `${filteredTasks.length > 0 ? (correctCount / filteredTasks.length) * 100 : 0}%` }}
                 transition={{ duration: 0.5 }}
                 className="h-full bg-gradient-to-r from-nok to-nok-dark rounded-full"
               />
             </div>
             <p className="text-center text-text-secondary mt-3 sm:mt-4 text-sm sm:text-base">
               Решено правильно: <span className="font-bold text-success">{correctCount}</span> из{' '}
-              <span className="font-bold text-text-primary">{tasks.length}</span> заданий
+              <span className="font-bold text-text-primary">{filteredTasks.length}</span> заданий
             </p>
           </motion.div>
         </div>
