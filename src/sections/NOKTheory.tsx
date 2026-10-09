@@ -1,3 +1,18 @@
+// ========================================================================
+// src/sections/NOKTheory.tsx
+// Версия секции: 2.3.0 (релиз приложения v2.3.0)
+// Изменения v2.3.0:
+//   * блок «Алгоритм нахождения НОК» переписан по образу объяснения:
+//     Шаг 1 — каноническое разложение (пример НОК(72, 90, 150));
+//     Шаг 2 — алфавитный список оснований;
+//     Шаг 3 — выбор максимальной степени + предупреждение о типичной ошибке;
+//     Шаг 4 — запись и вычисление результата;
+//   * добавлен блок «Самопроверка» (делимость на исходные числа и формула
+//     НОК(a, b) = a·b / НОД(a, b));
+//   * добавлена таблица-шпаргалка «Как оформить это в тетради».
+// Обратная совместимость: определение НОК, пример с кратными и
+// интерактивный пример (НОК(4, 6)) сохранены без изменений.
+// ========================================================================
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Percent, ChevronDown, Lightbulb, CheckCircle2, ArrowRight } from 'lucide-react';
@@ -191,7 +206,7 @@ export default function NOKTheory() {
             </p>
           </motion.div>
 
-          {/* Algorithm Steps */}
+          {/* Algorithm Steps — v2.3.0: переписан по образу «каноническое разложение → алфавитный список оснований → максимальная степень → результат» */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -199,41 +214,140 @@ export default function NOKTheory() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-card border border-border"
           >
-            <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-4 sm:mb-6">
-              Алгоритм нахождения НОК
+            <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-2 sm:mb-3">
+              Пошаговый алгоритм нахождения НОК
             </h3>
+            <p className="text-text-secondary text-sm sm:text-base mb-5 sm:mb-6">
+              Пример: найдём <span className="font-mono font-semibold text-nok-dark">НОК(72, 90, 150)</span>
+            </p>
 
-            <div className="space-y-3 sm:space-y-4">
+            <div className="space-y-5 sm:space-y-6">
+              {/* Шаг 1. Каноническое разложение */}
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">1</div>
                 <div>
-                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Разложить числа на простые множители</h4>
-                  <p className="text-text-secondary text-sm sm:text-base">Разложить каждое число на произведение простых чисел</p>
+                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Каноническое разложение</h4>
+                  <p className="text-text-secondary text-sm sm:text-base mb-2 sm:mb-3">
+                    Разложите каждое число на простые множители и запишите результат в каноническом виде
+                    (числа в порядке возрастания, одинаковые основания — в виде степени).
+                  </p>
+                  <div className="space-y-1 sm:space-y-2 bg-gray-50 rounded-xl p-3 sm:p-4 border border-border">
+                    <p className="font-mono text-sm sm:text-base text-text-primary">72 = 8 · 9 = <span className="font-bold text-nok-dark">2³ · 3²</span></p>
+                    <p className="font-mono text-sm sm:text-base text-text-primary">90 = 9 · 10 = <span className="font-bold text-nok-dark">2¹ · 3² · 5¹</span></p>
+                    <p className="font-mono text-sm sm:text-base text-text-primary">150 = 3 · 50 = <span className="font-bold text-nok-dark">2¹ · 3¹ · 5²</span></p>
+                  </div>
                 </div>
               </div>
 
+              {/* Шаг 2. Алфавитный список оснований */}
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">2</div>
                 <div>
-                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Выписать все множители первого числа</h4>
-                  <p className="text-text-secondary text-sm sm:text-base">Записать все простые множители из разложения первого числа</p>
+                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Составление алфавитного списка оснований</h4>
+                  <p className="text-text-secondary text-sm sm:text-base">
+                    Выпишите все уникальные простые числа (основания), которые встретились хотя бы в одном разложении.
+                    Удобнее всего записывать их в столбик в порядке возрастания. В нашем примере это:{' '}
+                    <span className="font-mono font-bold text-nok-dark">2, 3, 5</span>.
+                  </p>
                 </div>
               </div>
 
+              {/* Шаг 3. Выбор максимальной степени */}
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">3</div>
-                <div>
-                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Добавить недостающие множители</h4>
-                  <p className="text-text-secondary text-sm sm:text-base">Добавить множители из разложения второго числа, которых ещё нет</p>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">
+                    Выбор максимальной степени <span className="text-nok-dark">(самый важный шаг)</span>
+                  </h4>
+                  <p className="text-text-secondary text-sm sm:text-base mb-2 sm:mb-3">
+                    Для каждого выписанного основания выберите наибольший показатель степени из всех разложений.
+                  </p>
+                  <ul className="space-y-1 sm:space-y-2 text-sm sm:text-base text-text-primary">
+                    <li>Для основания 2: степени 3, 1, 1 — выбираем <span className="font-mono font-bold text-nok-dark">2³</span></li>
+                    <li>Для основания 3: степени 2, 2, 1 — выбираем <span className="font-mono font-bold text-nok-dark">3²</span></li>
+                    <li>Для основания 5: степени 0 (в первых двух числах пятёрки нет, это значит 5⁰), 1, 2 — выбираем <span className="font-mono font-bold text-nok-dark">5²</span></li>
+                  </ul>
+                  {/* Типичная ошибка учеников */}
+                  <div className="mt-3 sm:mt-4 flex items-start gap-2 sm:gap-3 bg-orange-50 border-2 border-orange-200 rounded-xl p-3 sm:p-4">
+                    <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-xs sm:text-sm text-text-primary">
+                      <strong>Типичная ошибка учеников:</strong> складывать степени или брать их среднее значение.
+                      Важно помнить: мы ищем «самое сильное» проявление каждого множителя, чтобы итоговое число
+                      делилось на каждое из исходных.
+                    </p>
+                  </div>
                 </div>
               </div>
 
+              {/* Шаг 4. Запись и вычисление результата */}
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="step-number-nok flex-shrink-0 text-sm sm:text-lg w-8 h-8 sm:w-10 sm:h-10">4</div>
                 <div>
-                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Перемножить все множители</h4>
-                  <p className="text-text-secondary text-sm sm:text-base">Перемножить все записанные множители — это и есть НОК</p>
+                  <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary">Запись и вычисление результата</h4>
+                  <p className="text-text-secondary text-sm sm:text-base mb-2">Перемножьте выбранные степени.</p>
+                  <p className="font-mono text-sm sm:text-lg text-text-primary">
+                    НОК(72, 90, 150) = 2³ · 3² · 5² = 8 · 9 · 25 ={' '}
+                    <span className="font-bold text-xl sm:text-2xl text-nok-dark">1800</span>
+                  </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Самопроверка */}
+            <div className="mt-5 sm:mt-6 flex items-start gap-2 sm:gap-3 bg-green-50 border-2 border-green-200 rounded-xl p-3 sm:p-4">
+              <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="text-xs sm:text-sm text-text-primary space-y-1">
+                <p><strong>Самопроверка:</strong> полученное число НОК должно делиться на каждое из исходных чисел без остатка.</p>
+                <p>
+                  Проверка связи для двух чисел:{' '}
+                  <span className="font-mono">НОК(a, b) = (a · b) / НОД(a, b)</span>. Если время позволяет, можно проверить результат через неё.
+                </p>
+              </div>
+            </div>
+
+            {/* Шпаргалка для тетради: таблица выбора степеней */}
+            <div className="mt-5 sm:mt-6">
+              <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary mb-1 sm:mb-2">
+                Как оформить это в тетради (шпаргалка для учеников)
+              </h4>
+              <p className="text-text-secondary text-xs sm:text-sm mb-3 sm:mb-4">
+                Чтобы алгоритм стал визуально понятным, используйте таблицу — этот визуальный каркас почти полностью исключает ошибки по невнимательности:
+              </p>
+              <div className="overflow-x-auto rounded-xl border border-border">
+                <table className="w-full text-xs sm:text-sm font-mono bg-white">
+                  <thead>
+                    <tr className="bg-nok/10 text-nok-dark">
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold">Основание</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center font-heading font-bold">Число 72</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center font-heading font-bold">Число 90</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center font-heading font-bold">Число 150</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center font-heading font-bold">Выбор для НОК</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-text-primary">
+                    <tr className="border-t border-border">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 font-bold">2</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">2³</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">2¹</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">2¹</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center font-bold bg-nok/10 text-nok-dark">2³</td>
+                    </tr>
+                    <tr className="border-t border-border">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 font-bold">3</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">3²</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">3²</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">3¹</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center font-bold bg-nok/10 text-nok-dark">3²</td>
+                    </tr>
+                    <tr className="border-t border-border">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 font-bold">5</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">5⁰</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">5¹</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">5²</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center font-bold bg-nok/10 text-nok-dark">5²</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </motion.div>
