@@ -63,7 +63,8 @@ export default function Hero() {
             className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-yellow-accent/30 text-text-primary font-heading font-semibold text-xs sm:text-sm mb-4 sm:mb-6"
           >
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="whitespace-nowrap">По программе ФГОС России</span>
+            {/* v2.7.1: убрано упоминание «По программе ФГОС России» (по просьбе), нейтральный бейдж */}
+            <span className="whitespace-nowrap">Математика • 5 класс</span>
           </motion.div>
 
           {/* Main Title */}
