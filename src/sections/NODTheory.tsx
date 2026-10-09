@@ -1,6 +1,11 @@
 // ========================================================================
 // src/sections/NODTheory.tsx
-// Версия секции: 2.5.0 (релиз приложения v2.5.0)
+// Версия секции: 2.6.0 (релиз приложения v2.6.0)
+// Изменения v2.6.0:
+//   * блок «Связь двух алгоритмов (методический совет)» перенесён из этой
+//     секции в секцию НОК (NOKTheory.tsx) — теперь это отдельная карточка
+//     сразу после примера НОК; здесь оставлена краткая отсылка с ссылкой на
+//     раздел «Что такое НОК?».
 // Изменения v2.5.0:
 //   * блок «Алгоритм нахождения НОД» переписан по образу объяснения
 //     (по аналогии с алгоритмом НОК из v2.3.0):
@@ -351,52 +356,16 @@ export default function NODTheory() {
               </div>
             </div>
 
-            {/* Связь двух алгоритмов (методический совет) — v2.5.0 */}
-            <div className="mt-5 sm:mt-6">
-              <h4 className="font-heading font-bold text-base sm:text-lg text-text-primary mb-1 sm:mb-2">
-                Связь двух алгоритмов (методический совет)
-              </h4>
-              <p className="text-text-secondary text-xs sm:text-sm mb-3 sm:mb-4">
-                Чтобы не путаться, всегда держите перед глазами эту пару:
+            {/* Связь двух алгоритмов — v2.6.0: полная карточка перенесена в секцию НОК (сразу после примера НОК) */}
+            <div className="mt-5 sm:mt-6 flex items-start gap-2 sm:gap-3 bg-purple-50 border-2 border-purple-200 rounded-xl p-3 sm:p-4">
+              <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+              <p className="text-xs sm:text-sm text-text-primary">
+                <strong>Связь двух алгоритмов:</strong> НОД берёт только общие основания в{' '}
+                <span className="font-mono font-bold text-nod-dark">минимальной</span> степени («общий знаменатель»),
+                НОК — все уникальные основания в <span className="font-mono font-bold text-nok-dark">максимальной</span>{' '}
+                степени («сборная солянка»). Сравнительная таблица и мнемоническое правило — в разделе{' '}
+                <a href="#nok" className="underline font-semibold text-nok-dark hover:text-nok">«Что такое НОК?»</a>.
               </p>
-              <div className="overflow-x-auto rounded-xl border border-border">
-                <table className="w-full text-xs sm:text-sm bg-white">
-                  <thead>
-                    <tr className="bg-gray-50 text-text-primary">
-                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold">Характеристика</th>
-                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold text-nok-dark">НОК (Наименьшее общее кратное)</th>
-                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold text-nod-dark">НОД (Наибольший общий делитель)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-text-primary">
-                    <tr className="border-t border-border align-top">
-                      <td className="px-2 sm:px-4 py-2 sm:py-3 font-semibold">Что ищем?</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3">Самое маленькое число, которое делится на данные</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3">Самое большое число, на которое делятся данные</td>
-                    </tr>
-                    <tr className="border-t border-border align-top">
-                      <td className="px-2 sm:px-4 py-2 sm:py-3 font-semibold">Какие основания берём?</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3">Все уникальные основания</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3">Только общие основания</td>
-                    </tr>
-                    <tr className="border-t border-border align-top">
-                      <td className="px-2 sm:px-4 py-2 sm:py-3 font-semibold">Какую степень выбираем?</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3">Максимальную (чтобы «покрыть» все числа)</td>
-                      <td className="px-2 sm:px-4 py-2 sm:py-3">Минимальную (чтобы «влезло» в каждое число)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              {/* Мнемоническое правило */}
-              <div className="mt-3 sm:mt-4 flex items-start gap-2 sm:gap-3 bg-green-50 border-2 border-green-200 rounded-xl p-3 sm:p-4">
-                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs sm:text-sm text-text-primary">
-                  <strong>Мнемоническое правило:</strong> НОК — «сборная солянка»: нам нужно самое большое и сильное,
-                  чтобы оно смогло поделить на всех, поэтому берём <span className="font-mono font-bold text-nok-dark">max</span>.{' '}
-                  НОД — «общий знаменатель»: самое скромное и маленькое, что есть у всех, поэтому берём{' '}
-                  <span className="font-mono font-bold text-nod-dark">min</span>.
-                </p>
-              </div>
             </div>
           </motion.div>
 

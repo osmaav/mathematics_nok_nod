@@ -1,13 +1,21 @@
 // ========================================================================
 // src/sections/NOKTheory.tsx
-// Версия секции: 2.5.0 (релиз приложения v2.5.0)
+// Версия секции: 2.6.0 (релиз приложения v2.6.0)
+// Изменения v2.6.0:
+//   * блок «Связь двух алгоритмов (методический совет)» оформлен как
+//     отдельная карточка СРАЗУ после примера НОК (после таблицы-шпаргалки):
+//     вводная фраза «Чтобы не путаться…», полная сравнительная таблица
+//     НОК/НОД (что ищем, какие основания берём, какую степень выбираем)
+//     и мнемоническое правило max/min. Карточка перенесена из секции НОД
+//     сюда (в НОД оставлена краткая отсылка), чтобы пары алгоритмов
+//     читались вместе: НОК-алгоритм → шпаргалка НОК → связь алгоритмов.
 // Изменения v2.5.0:
 //   * заголовок алгоритма приведён к виду «Пошаговый алгоритм нахождения НОК
 //     (исправленный)» — в паре с таким же заголовком в секции НОД;
 //   * добавлен блок «Связь двух алгоритмов (методический совет)»:
 //     сравнительная таблица НОК/НОД (что ищем, какие основания, какую
 //     степень) и мнемоническое правило «сборная солянка / общий
-//     знаменатель». Полный текст — в секции НОД (NODTheory.tsx).
+//     знаменатель».
 // Изменения v2.4.0:
 //   * интерактивный пример НОК(4, 6) переведён на запись со степенями:
 //     "4 = 2²", "6 = 2¹ · 3¹", выбор — "2² · 3¹", результат — "2² · 3¹ = 12"
@@ -370,22 +378,58 @@ export default function NOKTheory() {
             </div>
           </motion.div>
 
-          {/* Связь двух алгоритмов — v2.5.0: методический совет (краткая сводка, полный текст — в секции НОД) */}
+          {/* Связь двух алгоритмов (методический совет) — v2.6.0: отдельная карточка сразу после примера НОК */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.45 }}
-            className="mt-6 sm:mt-8 flex items-start gap-2 sm:gap-3 bg-purple-50 border-2 border-purple-200 rounded-xl p-3 sm:p-4"
+            className="mt-6 sm:mt-8 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-card border border-border"
           >
-            <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-            <p className="text-xs sm:text-sm text-text-primary">
-              <strong>Связь двух алгоритмов:</strong> НОК берёт все уникальные основания в{' '}
-              <span className="font-mono font-bold text-nok-dark">максимальной</span> степени («сборная солянка»),
-              НОД — только общие основания в <span className="font-mono font-bold text-nod-dark">минимальной</span>{' '}
-              степени («общий знаменатель»). Сравнительная таблица и мнемоническое правило — в разделе{' '}
-              <a href="#nod" className="underline font-semibold text-nod-dark hover:text-nod">«Что такое НОД?»</a>.
+            <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-1 sm:mb-2">
+              Связь двух алгоритмов <span className="text-text-secondary text-base sm:text-lg font-semibold">(методический совет)</span>
+            </h3>
+            <p className="text-text-secondary text-sm sm:text-base mb-3 sm:mb-4">
+              Чтобы не путаться, всегда держите перед глазами эту пару:
             </p>
+            <div className="overflow-x-auto rounded-xl border border-border">
+              <table className="w-full text-xs sm:text-sm bg-white">
+                <thead>
+                  <tr className="bg-gray-50 text-text-primary">
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold">Характеристика</th>
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold text-nok-dark">НОК (Наименьшее общее кратное)</th>
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-heading font-bold text-nod-dark">НОД (Наибольший общий делитель)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-text-primary">
+                  <tr className="border-t border-border align-top">
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 font-semibold">Что ищем?</td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3">Самое маленькое число, которое делится на данные</td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3">Самое большое число, на которое делятся данные</td>
+                  </tr>
+                  <tr className="border-t border-border align-top">
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 font-semibold">Какие основания берём?</td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3">Все уникальные основания</td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3">Только общие основания</td>
+                  </tr>
+                  <tr className="border-t border-border align-top">
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 font-semibold">Какую степень выбираем?</td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3">Максимальную (чтобы «покрыть» все числа)</td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3">Минимальную (чтобы «влезло» в каждое число)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {/* Мнемоническое правило */}
+            <div className="mt-3 sm:mt-4 flex items-start gap-2 sm:gap-3 bg-green-50 border-2 border-green-200 rounded-xl p-3 sm:p-4">
+              <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <p className="text-xs sm:text-sm text-text-primary">
+                <strong>Мнемоническое правило:</strong> НОК — «сборная солянка»: нам нужно самое большое и сильное,
+                чтобы оно смогло поделить на всех, поэтому берём <span className="font-mono font-bold text-nok-dark">max</span>.{' '}
+                НОД — «общий знаменатель»: самое скромное и маленькое, что есть у всех, поэтому берём{' '}
+                <span className="font-mono font-bold text-nod-dark">min</span>.
+              </p>
+            </div>
           </motion.div>
 
           {/* Interactive Example */}
