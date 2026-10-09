@@ -30,7 +30,7 @@
   "type": "module",
   "main": "eslint.config.js",
   "directories": {
-    "doc": "docs"
+    "doc": "dist"
   },
   "scripts": {
     "dev": "vite",
