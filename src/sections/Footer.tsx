@@ -1,5 +1,5 @@
 // @/src/sections/Footer.tsx
-// v2.2.0 — подвал заменён на дизайн подвала из проекта mathematics-divisibility
+// v2.2.1 — подвал заменён на дизайн подвала из проекта mathematics-divisibility
 // (https://github.com/osmaav/mathematics-divisibility), добавлена ссылка на сайт
 // «Правила делимости» в шапке которого есть обратная ссылка на этот проект.
 
@@ -12,12 +12,10 @@ const Footer = () => (
       <div className="flex justify-center gap-4 mt-4">
         <span className="text-xs text-gray-400">Сделано с ❤️ для сына Андрея</span>
       </div>
-      {/* v2.2.0: ссылка на связанный проект о правилах делимости */}
+      {/* v2.2.1: ссылка на связанный проект о правилах делимости (открывается в текущей вкладке) */}
       <p className="text-xs mt-3">
         <a
           href="https://osmaav.github.io/mathematics-divisibility/"
-          target="_blank"
-          rel="noopener noreferrer"
           className="text-violet-600 hover:text-violet-700 hover:underline"
         >
           Правила делимости →
