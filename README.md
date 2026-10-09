@@ -1,73 +1,140 @@
-# React + TypeScript + Vite
+# 🎓 Математика 5 класс: НОД и НОК
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Версия:** 2.1.0 · **Сборщик:** Vite 7 · **Язык интерфейса:** русский
 
-Currently, two official plugins are available:
+Интерактивный образовательный одностраничный (SPA) сайт по математике для учеников 5 класса, посвящённый темам **Наибольший Общий Делитель (НОД)** и **Наименьшее Общее Кратное (НОК)**. Сайт работает как web-app: поддерживает установку на домашний экран iPhone/iPad (PWA-манифест и набор иконок), корректно отображается на мобильных устройствах и десктопах и публикуется на GitHub Pages через GitHub Actions.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Возможности
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📚 Теория
+- Вводный раздел с определениями НОД и НОК (`TheoryIntro`)
+- Отдельные разделы с подробными объяснениями и примерами: НОД (`NODTheory`) и НОК (`NOKTheory`)
+- Наглядные карточки с делителями и кратными числами, пошаговые решения
 
-## Expanding the ESLint configuration
+### 🧮 Калькулятор НОД/НОК
+- Вычисление НОД и НОК для **двух или трёх** чисел (третье число — необязательное поле)
+- Пошаговое решение с разложением на простые множители
+- История вычислений (сохраняются все участвующие числа)
+- Интерактивные вкладки для переключения между НОД и НОК
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📝 Практика
+- **60 задач**, генерируемых случайным образом при загрузке
+- Фильтр по уровням сложности: 🟢 лёгкий (числа 2–20), 🟡 средний (10–50), 🔴 сложный (20–100, иногда 3 числа) — по 20 задач каждого уровня (10 НОД + 10 НОК)
+- Проверка ответа, подсказки и полные решения с разложением на множители
+- Панель прогресса («Ваш прогресс» / счётчик верных ответов) и сброс результатов
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### ✅ Тест «Проверь себя»
+- 10 вопросов с вариантами ответов
+- Случайное перемешивание вопросов и вариантов ответов (алгоритм Фишера–Йетса)
+- Мгновенная проверка с объяснением правильного ответа
+- Итоговая оценка и разбор ошибок, конфетти при отличном результате
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🎨 Интерфейс
+- Адаптивная вёрстка (Tailwind CSS), анимации появления секций (Framer Motion)
+- Шапка с навигацией, мобильное меню и кнопка «Проверь себя»
+- Автоматическая подсветка активного раздела при прокрутке (Intersection Observer, `ActiveSectionContext` + `useSectionVisibility`)
+- Плавная прокрутка к разделам
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🛠 Технологии
+
+| Инструмент | Назначение |
+|---|---|
+| React 19 + TypeScript | UI и типизация |
+| Vite 7 | Сборка и dev-сервер |
+| Tailwind CSS 3.4 (+ tailwindcss-animate) | Стилизация, кастомные цвета `nod` (#FF6B6B) и `nok` (#4ECDC4) |
+| shadcn/ui + Radix UI | Готовые UI-компоненты (`src/components/ui/`, ~54 шт.) |
+| Framer Motion | Анимации |
+| lucide-react | Иконки |
+| canvas-confetti | Конфетти в тесте |
+
+---
+
+## 📁 Структура проекта
+
+```
+├── index.html               # Входная страница: meta-теги web-app, favicon, apple-touch-icon'и, манифест
+├── public/
+│   ├── manifest.webmanifest # Манифест PWA/web-app (v2.1.0)
+│   └── icons/               # Иконки: favicon, apple-touch-icon, icon-192/512,
+│                            # наборы iphone-* и ipad-* для iPhone 7…16 / iPad 6…10
+├── src/
+│   ├── main.tsx             # Точка входа React
+│   ├── App.tsx              # Корневой компонент: порядок секций, плавная прокрутка
+│   ├── App.css              # Специфические стили приложения
+│   ├── index.css            # Глобальные стили и тема Tailwind
+│   ├── components/ui/       # Компоненты shadcn/ui (button, card, tabs, input и др.)
+│   ├── contexts/
+│   │   └── ActiveSectionContext.tsx  # Контекст активной секции
+│   ├── hooks/
+│   │   ├── useSectionVisibility.ts   # Отслеживание видимой секции (Intersection Observer)
+│   │   └── use-mobile.ts             # Хук проверки мобильной ширины экрана
+│   ├── lib/
+│   │   ├── math.ts          # Математика: разложение на множители, НОД/НОК (2–3 числа),
+│   │   │                    # алгоритм Евклида, генерация 60 задач и 10 вопросов теста
+│   │   └── utils.ts         # Утилита cn() (clsx + tailwind-merge)
+│   ├── sections/            # Секции страницы
+│   │   ├── Header.tsx       # Шапка с навигацией и мобильным меню
+│   │   ├── Hero.tsx         # Главный экран
+│   │   ├── TheoryIntro.tsx  # Вводная теория
+│   │   ├── NODTheory.tsx    # Раздел НОД
+│   │   ├── NOKTheory.tsx    # Раздел НОК
+│   │   ├── Calculator.tsx   # Калькулятор НОД/НОК (два или три числа)
+│   │   ├── Practice.tsx     # Практика (60 задач)
+│   │   ├── Quiz.tsx         # Тест «Проверь себя»
+│   │   └── Footer.tsx       # Подвал
+│   └── types/
+│       └── index.ts         # TypeScript-типы (PracticeTask, QuizQuestion и др.)
+├── .github/workflows/deploy.yml  # Деплой на GitHub Pages при push в main
+├── vite.config.ts           # Сборка (base './', алиас '@' → src)
+├── tailwind.config.js       # Тема Tailwind (цвета nod/nok, шрифты, анимации)
+├── tsconfig*.json           # Конфигурации TypeScript
+├── eslint.config.js         # Конфигурация ESLint (flat config)
+└── package.json             # Метаданные пакета и npm-скрипты
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Установка и запуск
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Клонировать репозиторий
+git clone https://github.com/osmaav/mathematics_nok_nod.git
+cd mathematics_nok_nod
+
+# Установить зависимости (Node.js 20+)
+npm install
+
+# Запустить dev-сервер
+npm run dev
+
+# Проверка типов и сборка production-версии в dist/
+npm run build
+
+# Просмотр собранной версии
+npm run preview
+
+# Линтинг
+npm run lint
 ```
+
+> ⚠️ В `package.json` присутствует скрипт `npm run icons` (`python3 scripts/generate-icons.py`), но каталог `scripts/` в репозиторий не включён — готовые иконки лежат в `public/icons/`.
+
+---
+
+## 🔄 Публикация (GitHub Pages)
+
+При каждом push в ветку `main` workflow [Deploy to GitHub Pages](.github/workflows/deploy.yml) выполняет `npm ci`, `npm run build` и публикует каталог `dist/` на GitHub Pages.
+
+---
+
+## 📄 Лицензия
+
+ISC
+
+## 👨‍💻 Автор
+
+**Андрей Осьмаков** — GitHub: [@osmaav](https://github.com/osmaav), Telegram: [@osmaav](https://t.me/osmaav)
