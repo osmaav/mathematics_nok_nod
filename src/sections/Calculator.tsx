@@ -1,6 +1,17 @@
 // ========================================================================
 // src/sections/Calculator.tsx
-// Версия компонента: 2.5.0 (релиз приложения v2.5.0)
+// Версия компонента: 2.7.0 (релиз приложения v2.7.0)
+// Изменения v2.7.0:
+//   * калькулятор принимает два ИЛИ три числа: третье поле явно помечено
+//     как необязательное ("необязательно"), если оно не заполнено —
+//     вычисление выполняется для двух чисел (реализовано и проверено:
+//     НОД(36, 48) = 12, НОД(36, 48, 60) = 12, НОК(36, 48, 60) = 720,
+//     НОК(72, 90, 150) = 1800);
+//   * в пошаговом решении добавлены подписи шагов ("Шаг 1. Каноническое
+//     разложение", "Шаг 2. Алфавитный список оснований", "Шаг 3. Выбор
+//     минимальной/максимальной степени", "Шаг 4. Результат") — как в
+//     исправленном алгоритме из теории;
+//   * текст подсказки уточнён: третье число необязательное.
 // Изменения v2.5.0:
 //   * пошаговое решение НОД приведено к исправленному алгоритму из теории:
 //     перед выбором оснований показывается «Главное правило работы со
@@ -125,7 +136,8 @@ export default function Calculator() {
   ): string[] => {
     const steps: string[] = [];
 
-    // Шаг 1..k: разложение каждого числа
+    // v2.7.0: Шаг 1 — подписан как в исправленном алгоритме из теории
+    steps.push('Шаг 1. Каноническое разложение');
     numbers.forEach((n, idx) => {
       steps.push(`${n} = ${formatFactorization(factors[idx])}`);
     });
@@ -171,7 +183,6 @@ export default function Calculator() {
     });
 
     const label = mode === 'nod' ? 'НОД' : 'НОК';
-    const title = mode === 'nod' ? 'общие основания — минимальные степени' : 'все основания — максимальные степени';
 
     // v2.5.0: для НОД напоминаем главное правило работы со степенями
     // (см. «Пошаговый алгоритм нахождения НОД (исправленный)» в теории)
@@ -179,13 +190,21 @@ export default function Calculator() {
       steps.push('Правило: НОД — произведение общих простых множителей в их наименьшей степени');
     }
 
-    // v2.4.0: сводная строка по всем основаниям + выбор степени по каждому основанию
+    // v2.7.0: шаги подписаны так же, как в исправленном алгоритме из теории
+    // (Шаг 2 — алфавитный список оснований, Шаг 3 — выбор степени)
+    steps.push('Шаг 2. Алфавитный список оснований');
     if (allPrimes.length > 0) {
-      steps.push(`Основания (${title}): ${baseList}`);
-      choiceDetails.forEach(d => steps.push(`Выбор ${d}`));
+      steps.push(`Основания: ${baseList}`);
     }
 
+    steps.push(mode === 'nod'
+      ? 'Шаг 3. Выбор минимальной степени (только общие основания)'
+      : 'Шаг 3. Выбор максимальной степени (все основания)');
+    choiceDetails.forEach(d => steps.push(`Выбор ${d}`));
+
     const finalStr = Object.keys(pickedPowers).length > 0 ? formatPowersFromCounts(pickedPowers, { skipPowerOne: true }) : '';
+    // v2.7.0: Шаг 4 — запись и вычисление результата
+    steps.push('Шаг 4. Результат');
     // Если выбранное совпадает с результатом или оснований нет — без дублирования
     if (!finalStr || finalStr === String(res)) {
       steps.push(`${label}(${numbers.join(', ')}) = ${res}`);
@@ -230,9 +249,9 @@ export default function Calculator() {
             <h2 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-text-primary mb-3 sm:mb-4">
               Вычисли <span className="text-gradient-nod">НОД</span> и <span className="text-gradient-nok">НОК</span>
             </h2>
-            {/* v2.0.0: текст обновлён — теперь можно ввести три числа */}
+            {/* v2.7.0: уточнён текст — третье число необязательное */}
             <p className="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto px-4">
-              Введи два или три числа и получи пошаговое решение
+              Введи два числа (или три — третье поле необязательное) и получи пошаговое решение
             </p>
           </motion.div>
 
@@ -394,7 +413,7 @@ function CalculatorContent({ type, num1, num2, num3, setNum1, setNum2, setNum3, 
             max="10000"
           />
         </div>
-        {/* v2.0.0: третье число — необязательное */}
+        {/* v2.7.0: явный маркер необязательности поля */}
         <div>
           <label className="block font-heading font-semibold text-text-primary mb-1.5 sm:mb-2 text-sm sm:text-base">
             Третье число <span className="text-text-secondary font-normal text-xs">(необязательно)</span>
@@ -403,7 +422,7 @@ function CalculatorContent({ type, num1, num2, num3, setNum1, setNum2, setNum3, 
             type="number"
             value={num3}
             onChange={(e) => setNum3(e.target.value)}
-            placeholder="Например: 60"
+            placeholder="Можно оставить пустым"
             className={`input-field ${accentClass}`}
             min="1"
             max="10000"
