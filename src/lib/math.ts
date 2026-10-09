@@ -1,6 +1,16 @@
 // ========================================================================
 // src/lib/math.ts
-// Версия модуля: 2.0.0 (релиз приложения v2.1.0)
+// Версия модуля: 2.4.0 (релиз приложения v2.4.0)
+// Изменения v2.4.0:
+//   * formatFactorization переведён на канонический вид со степенями:
+//     одинаковые сомножители больше не перемножаются явно —
+//     "2 × 2 × 3" -> "2² · 3", "2" -> "2¹" (единый формат для таблицы);
+//   * добавлена formatPowersFromCounts(counts, { skipPowerOne }) —
+//     форматирование карты "основание -> степень" в виде "2³ · 3² · 5²";
+//     используется калькулятором и решениями упражнений;
+//   * generateNODSolution / generateNOKSolution / generateNODHint /
+//     generateNOKHint используют степени вместо перечисления множителей;
+//   * объяснения квиза обновлены на запись со степенями.
 // Изменения v2.0.0:
 //   * calculateNOD / calculateNOK переведены на вариадический сигнатур
 //     (...numbers: number[]) — поддержка двух ИЛИ трёх чисел;
@@ -31,7 +41,43 @@ export function primeFactorization(n: number): number[] {
   return factors;
 }
 
-// Format factorization as string (e.g., "2 × 2 × 3")
+// v2.4.0: надстрочные цифры для показателей степеней (0-9)
+const SUPERSCRIPT_DIGITS = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+
+// v2.4.0: превращает число в надстрочную степень, например 3 -> "³", 12 -> "¹²"
+export function toSuperscript(n: number): string {
+  return String(n)
+    .split('')
+    .map(d => SUPERSCRIPT_DIGITS[Number(d)])
+    .join('');
+}
+
+/**
+ * v2.4.0: форматирование карты "основание -> степень" в канонический вид
+ * со степенями вместо перемножения одинаковых сомножителей:
+ *   {2: 3, 3: 2, 5: 2} -> "2³ · 3² · 5²"
+ * Параметры:
+ *   skipPowerOne — если true, степень 1 пишется просто как "2" без "¹"
+ *   (по умолчанию false: единый формат с явными показателями —
+ *    удобно сравнивать степени в шагах решения и таблицах).
+ */
+export function formatPowersFromCounts(
+  counts: Record<number, number>,
+  options?: { skipPowerOne?: boolean }
+): string {
+  const skipPowerOne = options?.skipPowerOne ?? false;
+  const entries = Object.entries(counts)
+    .map(([k, v]) => [Number(k), v] as [number, number])
+    .filter(([, v]) => v > 0)
+    .sort(([a], [b]) => a - b);
+  if (entries.length === 0) return '1';
+  return entries
+    .map(([prime, pow]) => (skipPowerOne && pow === 1 ? `${prime}` : `${prime}${toSuperscript(pow)}`))
+    .join(' · ');
+}
+
+// v2.4.0: Format factorization as string in canonical powers form
+// (например [2, 2, 3] -> "2² · 3", [2] -> "2¹") — степени вместо перемножений
 export function formatFactorization(factors: number[]): string {
   if (factors.length === 0) return '1';
 
@@ -40,14 +86,7 @@ export function formatFactorization(factors: number[]): string {
     counts[f] = (counts[f] || 0) + 1;
   });
 
-  return Object.entries(counts)
-    .sort(([a], [b]) => Number(a) - Number(b))
-    .map(([prime, count]) => {
-      // Создаем массив длиной 'count', заполняем его значением 'prime' 
-      // и объединяем через '×'
-      return Array(Number(count)).fill(prime).join(' × ');
-    })
-    .join(' × '); // Используем '×' как общий разделитель
+  return formatPowersFromCounts(counts);
 }
 
 // v2.0.0: возвращает карту "простой множитель -> количество" для числа
@@ -203,7 +242,7 @@ function generateNOKHint(numbers: number[]): string {
     const [a, b] = numbers;
     const factorsA = formatFactorization(primeFactorization(a));
     const factorsB = formatFactorization(primeFactorization(b));
-    return `Разложите числа: ${a} = ${factorsA}, ${b} = ${factorsB}. Выберите каждый простой множитель с наибольшим количеством повторений.`;
+    return `Разложите числа: ${a} = ${factorsA}, ${b} = ${factorsB}. Для каждого простого множителя выбери наибольшую степень (например, если 2¹ и 2³ — берём 2³).`;
   } else {
     return numbers.map(n => `${n} = ${formatFactorization(primeFactorization(n))}`).join(', ');
   }
@@ -221,17 +260,16 @@ function generateNODSolution(numbers: number[]): string {
   });
   const commonPrimes = Object.keys(maps[0]).map(Number)
     .filter(p => maps.every(m => p in m));
-  const commonFactors: number[] = [];
+  // v2.4.0: собираем МИНИМАЛЬНЫЕ степени общих множителей и записываем их степенями
+  const minPowers: Record<number, number> = {};
   commonPrimes.forEach(prime => {
-    const minCount = Math.min(...maps.map(m => m[prime]));
-    for (let i = 0; i < minCount; i++) commonFactors.push(prime);
+    minPowers[prime] = Math.min(...maps.map(m => m[prime]));
   });
-  commonFactors.sort((a, b) => a - b);
 
-  const commonFactorsStr = commonFactors.length > 0 ? commonFactors.join(' × ') : '1';
+  const commonFactorsStr = formatPowersFromCounts(minPowers, { skipPowerOne: true });
 
-  // Если общий множитель один или НОД = 1, не дублируем его
-  if (commonFactors.length <= 1) {
+  // Если множителей нет (НОД = 1) или он один — не дублируем разложение
+  if (Object.keys(minPowers).length === 0 || nod === 1) {
     return `НОД(${numbers.join(', ')}) = ${nod}`;
   }
   return `НОД(${numbers.join(', ')}) = ${commonFactorsStr} = ${nod}`;
@@ -247,17 +285,17 @@ function generateNOKSolution(numbers: number[]): string {
     primeFactorization(n).forEach(f => c[f] = (c[f] || 0) + 1);
     return c;
   });
-  const allPrimes = Array.from(new Set(maps.flatMap(m => Object.keys(m).map(Number))));
-  const maxFactors: number[] = [];
+  // v2.4.0: собираем МАКСИМАЛЬНЫЕ степени всех оснований и записываем их степенями
+  const allPrimes = Array.from(new Set(maps.flatMap(m => Object.keys(m).map(Number))))
+    .sort((a, b) => a - b);
+  const maxPowers: Record<number, number> = {};
   allPrimes.forEach(prime => {
-    const maxCount = Math.max(...maps.map(m => m[prime] || 0));
-    for (let i = 0; i < maxCount; i++) maxFactors.push(prime);
+    maxPowers[prime] = Math.max(...maps.map(m => m[prime] || 0));
   });
-  maxFactors.sort((a, b) => a - b);
 
-  const maxFactorsStr = maxFactors.join(' × ');
-  // Если множитель один, не дублируем его
-  if (maxFactors.length <= 1) {
+  const maxFactorsStr = formatPowersFromCounts(maxPowers, { skipPowerOne: true });
+  // Если основание одно (или НОК совпадает с одним из чисел), не дублируем разложение
+  if (allPrimes.length <= 1) {
     return `НОК(${numbers.join(', ')}) = ${nok}`;
   }
   return `НОК(${numbers.join(', ')}) = ${maxFactorsStr} = ${nok}`;
@@ -497,7 +535,7 @@ export function generateQuizQuestions(): import('@/types').QuizQuestion[] {
       question: 'Найдите НОД(12, 18)',
       options: ['2', '3', '6', '12'],
       correctAnswer: 2,
-      explanation: '12 = 2 × 2 × 3, 18 = 2 × 3 × 3. Общие множители: 2 × 3 = 6.'
+      explanation: '12 = 2² · 3, 18 = 2 · 3². Берём общие основания в наименьших степенях: 2¹ · 3¹ = 6.'
     },
     {
       id: 4,
@@ -523,14 +561,14 @@ export function generateQuizQuestions(): import('@/types').QuizQuestion[] {
       question: 'Найдите НОД(15, 25)',
       options: ['1', '3', '5', '15'],
       correctAnswer: 2,
-      explanation: '15 = 3 × 5, 25 = 5 × 5. Общий множитель: 5.'
+      explanation: '15 = 3 · 5, 25 = 5². Общий множитель: 5¹ = 5.'
     },
     {
       id: 7,
       question: 'Найдите НОК(8, 12)',
       options: ['4', '24', '48', '96'],
       correctAnswer: 1,
-      explanation: '8 = 2 × 2 , 12 = 2 × 2 × 3. НОК = 2 × 2 × 2 × 3 = 24.'
+      explanation: '8 = 2³, 12 = 2² · 3. Берём каждое основание в наибольшей степени: НОК = 2³ · 3 = 24.'
     },
     {
       id: 8,

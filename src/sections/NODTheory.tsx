@@ -1,3 +1,12 @@
+// ========================================================================
+// src/sections/NODTheory.tsx
+// Версия секции: 2.4.0 (релиз приложения v2.4.0)
+// Изменения v2.4.0:
+//   * интерактивный пример НОД(36, 48) переведён на запись со степенями:
+//     разложения — "36 = 2² · 3²", "48 = 2⁴ · 3"; чипы множителей — степени;
+//     шаг перемножения — "2² · 3¹ = 12" (взяли наименьшие степени общих
+//     оснований), вместо "2 × 2 × 3".
+// ========================================================================
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Divide, ChevronDown, Lightbulb, CheckCircle2, ArrowRight } from 'lucide-react';
@@ -36,25 +45,27 @@ export default function NODTheory() {
       )
     },
     {
-      title: 'Найдём общие простые множители',
+      // v2.4.0: общие основания показываем степенями (2² у 36 и 2⁴ у 48 -> общая часть 2²)
+      title: 'Найдём общие простые основания',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="text-text-secondary text-sm sm:text-base">Общие множители: <span className="font-mono text-nod-dark font-bold">2 и 3</span></p>
+          <p className="text-text-secondary text-sm sm:text-base">Общие основания: <span className="font-mono text-nod-dark font-bold">2 и 3</span>. Берём каждое в <strong>наименьшей</strong> степени из разложений.</p>
           <div className="flex gap-1.5 sm:gap-2 flex-wrap">
-            {factorsA.map((f, i) => (
-              <span key={i} className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm ${factorsB.includes(f) ? 'bg-nod/20 text-nod-dark' : 'bg-gray-100 text-text-secondary'}`}>
-                {f}
-              </span>
-            ))}
+            {/* Чипы: степени оснований числа 36 (общие с 48 — подсвечены) */}
+            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nod/20 text-nod-dark">2²</span>
+            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nod/20 text-nod-dark">3²</span>
+            <span className="text-text-secondary font-mono text-xs sm:text-sm self-center">у 36; у 48 — 2⁴ · 3¹</span>
           </div>
+          <p className="text-text-secondary text-xs sm:text-sm">(для основания 2 наименьшая степень — 2² из 36, для основания 3 — 3¹ из 48)</p>
         </div>
       )
     },
     {
-      title: 'Перемножим все общие множители',
+      // v2.4.0: перемножение одинаковых сомножителей заменено степенями
+      title: 'Перемножим выбранные степени',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="font-mono text-base sm:text-lg">2 × 2 × 3 = <span className="text-nod-dark font-bold text-xl sm:text-2xl">12</span></p>
+          <p className="font-mono text-base sm:text-lg">2² · 3¹ = 4 × 3 = <span className="text-nod-dark font-bold text-xl sm:text-2xl">12</span></p>
           <p className="text-text-secondary text-sm sm:text-base">Значит, НОД({exampleNumbers.a}, {exampleNumbers.b}) = 12</p>
         </div>
       )

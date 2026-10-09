@@ -1,6 +1,12 @@
 // ========================================================================
 // src/sections/NOKTheory.tsx
-// Версия секции: 2.3.0 (релиз приложения v2.3.0)
+// Версия секции: 2.4.0 (релиз приложения v2.4.0)
+// Изменения v2.4.0:
+//   * интерактивный пример НОК(4, 6) переведён на запись со степенями:
+//     "4 = 2²", "6 = 2¹ · 3¹", выбор — "2² · 3¹", результат — "2² · 3¹ = 12";
+//   * разложения в алгоритме дополнены явными нулевыми степенями
+//     (72 = 2³ · 3² · 5⁰), чтобы все три строки имели одинаковый набор
+//     оснований — как в таблице-шпаргалке.
 // Изменения v2.3.0:
 //   * блок «Алгоритм нахождения НОК» переписан по образу объяснения:
 //     Шаг 1 — каноническое разложение (пример НОК(72, 90, 150));
@@ -51,23 +57,25 @@ export default function NOKTheory() {
       )
     },
     {
-      title: 'Возьмём все множители с большей степенью',
+      // v2.4.0: выбор оснований показываем степенями вместо перемножения "2 × 2"
+      title: 'Возьмём каждое основание с большей степенью',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="text-text-secondary text-sm sm:text-base">Из первого разложения берём все простые множители и добавляем из второго которых еще нет:</p>
+          <p className="text-text-secondary text-sm sm:text-base">Сравниваем степени каждого основания в двух разложениях и берём наибольшую:</p>
           <div className="flex gap-1.5 sm:gap-2 flex-wrap">
-            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">2 × 2</span>
-            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">3</span>
+            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">2²</span>
+            <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg font-mono text-xs sm:text-sm bg-nok/20 text-nok-dark">3¹</span>
           </div>
-          <p className="text-text-secondary text-xs sm:text-sm">(взяли 2 × 2 из {exampleNumbers.a} и 3 из {exampleNumbers.b})</p>
+          <p className="text-text-secondary text-xs sm:text-sm">(для основания 2: степени 2 и 1 — взяли 2² из {exampleNumbers.a}; для основания 3: степени 0 и 1 — взяли 3¹ из {exampleNumbers.b})</p>
         </div>
       )
     },
     {
-      title: 'Перемножим множители',
+      // v2.4.0: итог записан степенями
+      title: 'Перемножим выбранные степени',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="font-mono text-base sm:text-lg">2 × 2 × 3 = 4 × 3 = <span className="text-nok-dark font-bold text-xl sm:text-2xl">12</span></p>
+          <p className="font-mono text-base sm:text-lg">2² · 3¹ = 4 × 3 = <span className="text-nok-dark font-bold text-xl sm:text-2xl">12</span></p>
           <p className="text-text-secondary text-sm sm:text-base">Значит, НОК({exampleNumbers.a}, {exampleNumbers.b}) = 12</p>
         </div>
       )
@@ -232,7 +240,8 @@ export default function NOKTheory() {
                     (числа в порядке возрастания, одинаковые основания — в виде степени).
                   </p>
                   <div className="space-y-1 sm:space-y-2 bg-gray-50 rounded-xl p-3 sm:p-4 border border-border">
-                    <p className="font-mono text-sm sm:text-base text-text-primary">72 = 8 · 9 = <span className="font-bold text-nok-dark">2³ · 3²</span></p>
+                    {/* v2.4.0: нулевые степени (5⁰) дописаны явно — набор оснований одинаков во всех строках */}
+                    <p className="font-mono text-sm sm:text-base text-text-primary">72 = 8 · 9 = <span className="font-bold text-nok-dark">2³ · 3² · 5⁰</span></p>
                     <p className="font-mono text-sm sm:text-base text-text-primary">90 = 9 · 10 = <span className="font-bold text-nok-dark">2¹ · 3² · 5¹</span></p>
                     <p className="font-mono text-sm sm:text-base text-text-primary">150 = 3 · 50 = <span className="font-bold text-nok-dark">2¹ · 3¹ · 5²</span></p>
                   </div>

@@ -1,6 +1,12 @@
 // ========================================================================
 // src/sections/Calculator.tsx
-// Версия компонента: 2.0.0 (релиз приложения v2.1.0)
+// Версия компонента: 2.4.0 (релиз приложения v2.4.0)
+// Изменения v2.4.0:
+//   * пошаговое решение переведено на канонический вид со степенями:
+//     разложения чисел — "72 = 2³ · 3²" (вместо "2 × 2 × 2 × 3 × 3");
+//     выбор множителей для НОД/НОК показывается степенями с основаниями
+//     в нулевых степенях (5⁰), как в таблице-шпаргалке теории НОК;
+//     итоговая строка: "НОК(12, 18) = 2² · 3² = 36".
 // Изменения v2.0.0:
 //   * добавлено поле ввода третьего числа для вкладок НОД и НОК;
 //   * третье число — опциональное: если оно не заполнено, вычисление
@@ -14,7 +20,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calculator as CalcIcon, Divide, Percent, RotateCcw, ArrowRight, Sparkles } from 'lucide-react';
-import { calculateNOD, calculateNOK, primeFactorization, formatFactorization } from '@/lib/math';
+// v2.4.0: добавлены formatPowersFromCounts / toSuperscript — степени вместо перемножений
+import { calculateNOD, calculateNOK, primeFactorization, formatFactorization, formatPowersFromCounts, toSuperscript } from '@/lib/math';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
@@ -116,40 +123,61 @@ export default function Calculator() {
       steps.push(`${n} = ${formatFactorization(factors[idx])}`);
     });
 
-    // Карты "множитель -> количество" по каждому числу
+    // Карты "множитель -> степень" по каждому числу
     const maps = factors.map(fs => {
       const c: Record<number, number> = {};
       fs.forEach(f => c[f] = (c[f] || 0) + 1);
       return c;
     });
 
-    // Объединяем карты: min для НОД, max для НОК
+    // Алфавитный список оснований (v2.4.0): все уникальные простые числа
+    // в порядке возрастания — как в шаге 2 алгоритма НОК из теории
     const allPrimes = Array.from(new Set(maps.flatMap(m => Object.keys(m).map(Number))))
       .sort((a, b) => a - b);
 
-    const pickedFactors: string[] = [];
+    // v2.4.0: список оснований в виде степеней (показатель = степень из
+    // первого числа; отсутствие множителя в числе отображается как 5⁰ —
+    // тот же формат, что и в таблице-шпаргалке теории НОК)
+    const baseList = allPrimes
+      .map(prime => {
+        const firstPow = maps[0][prime] || 0;
+        return `${prime}${toSuperscript(firstPow)}`;
+      })
+      .join(' · ');
+
+    const pickedPowers: Record<number, number> = {};
+    const choiceDetails: string[] = [];
     allPrimes.forEach(prime => {
-      const presentInAll = maps.every(m => prime in m);
+      const powers = maps.map(m => m[prime] || 0);
+      const presentInAll = powers.every(p => p > 0);
       if (mode === 'nod') {
-        if (!presentInAll) return; // общий делитель требует присутствия во всех числах
-        const cnt = Math.min(...maps.map(m => m[prime]));
-        pickedFactors.push(Array(cnt).fill(prime).join(' × '));
+        // общий делитель требует присутствия основания во всех числах
+        if (!presentInAll) return;
+        const minPow = Math.min(...powers);
+        pickedPowers[prime] = minPow;
+        choiceDetails.push(`для ${prime}: минимальная степень из ${powers.join(', ')} → ${prime}${toSuperscript(minPow)}`);
       } else {
-        const cnt = Math.max(...maps.map(m => m[prime] || 0));
-        if (cnt > 0) pickedFactors.push(Array(cnt).fill(prime).join(' × '));
+        const maxPow = Math.max(...powers);
+        pickedPowers[prime] = maxPow;
+        choiceDetails.push(`для ${prime}: максимальная степень из ${powers.join(', ')} → ${prime}${toSuperscript(maxPow)}`);
       }
     });
 
     const label = mode === 'nod' ? 'НОД' : 'НОК';
-    const title = mode === 'nod' ? 'Общие множители' : 'Все уникальные множители';
-    const joined = pickedFactors.length > 0 ? pickedFactors.join(' × ') : '1';
+    const title = mode === 'nod' ? 'общие основания — минимальные степени' : 'все основания — максимальные степени';
 
-    steps.push(`${title}: ${joined}`);
-    // Если множитель один (или результат = 1), не дублируем разложение
-    if (pickedFactors.length <= 1) {
+    // v2.4.0: сводная строка по всем основаниям + выбор степени по каждому основанию
+    if (allPrimes.length > 0) {
+      steps.push(`Основания (${title}): ${baseList}`);
+      choiceDetails.forEach(d => steps.push(`Выбор ${d}`));
+    }
+
+    const finalStr = Object.keys(pickedPowers).length > 0 ? formatPowersFromCounts(pickedPowers, { skipPowerOne: true }) : '';
+    // Если выбранное совпадает с результатом или оснований нет — без дублирования
+    if (!finalStr || finalStr === String(res)) {
       steps.push(`${label}(${numbers.join(', ')}) = ${res}`);
     } else {
-      steps.push(`${label}(${numbers.join(', ')}) = ${joined} = ${res}`);
+      steps.push(`${label}(${numbers.join(', ')}) = ${finalStr} = ${res}`);
     }
     return steps;
   };
