@@ -1,3 +1,16 @@
+// ========================================================================
+// src/sections/Calculator.tsx
+// Версия компонента: 2.0.0 (релиз приложения v2.1.0)
+// Изменения v2.0.0:
+//   * добавлено поле ввода третьего числа для вкладок НОД и НОК;
+//   * третье число — опциональное: если оно не заполнено, вычисление
+//     выполняется для двух чисел (обратная совместимость);
+//   * логика расчёта и пошагового решения переработана под массив из
+//     2..3 чисел (calculateNOD/calculateNOK теперь вариадические);
+//   * в истории вычислений сохраняются все участвующие числа;
+//   * обновлены тексты интерфейса ("два или три числа").
+// ========================================================================
+
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calculator as CalcIcon, Divide, Percent, RotateCcw, ArrowRight, Sparkles } from 'lucide-react';
@@ -9,133 +22,151 @@ import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 interface CalculationHistory {
   id: number;
   type: 'nod' | 'nok';
-  numbers: number[];
+  numbers: number[]; // v2.0.0: 2 или 3 числа
   result: number;
+}
+
+// v2.0.0: результат вычисления — разложения и шаги для произвольного
+// количества чисел (2..3)
+interface CalculationResult {
+  value: number;
+  factors: number[][]; // разложение каждого входного числа
+  steps: string[];
 }
 
 export default function Calculator() {
   useSectionVisibility({ sectionId: 'calculator' });
-  
+
   const [activeTab, setActiveTab] = useState<'nod' | 'nok'>('nod');
   const [num1, setNum1] = useState<string>('');
   const [num2, setNum2] = useState<string>('');
-  const [result, setResult] = useState<{
-    value: number;
-    factors1: number[];
-    factors2: number[];
-    steps: string[];
-  } | null>(null);
+  // v2.0.0: третье число (опциональное)
+  const [num3, setNum3] = useState<string>('');
+  const [result, setResult] = useState<CalculationResult | null>(null);
   const [history, setHistory] = useState<CalculationHistory[]>([]);
   const [error, setError] = useState<string>('');
 
   const handleCalculate = () => {
     setError('');
-    const n1 = parseInt(num1);
-    const n2 = parseInt(num2);
 
-    if (isNaN(n1) || isNaN(n2) || n1 <= 0 || n2 <= 0) {
-      setError('Пожалуйста, введите положительные числа');
+    // v2.0.0: собираем список чисел; третье включаем только если заполнено
+    const rawInputs = [num1, num2, num3.trim() === '' ? null : num3];
+    const numbers: number[] = [];
+
+    for (const raw of rawInputs) {
+      if (raw === null) continue;
+      const n = parseInt(raw, 10);
+      if (isNaN(n) || n <= 0) {
+        setError('Пожалуйста, введите положительные числа');
+        return;
+      }
+      if (n > 10000) {
+        setError('Числа должны быть не больше 10000');
+        return;
+      }
+      numbers.push(n);
+    }
+
+    if (numbers.length < 2) {
+      setError('Введите минимум два числа');
       return;
     }
 
-    if (n1 > 10000 || n2 > 10000) {
-      setError('Числа должны быть не больше 10000');
-      return;
-    }
-
-    const factors1 = primeFactorization(n1);
-    const factors2 = primeFactorization(n2);
+    // Разложения на простые множители для каждого числа
+    const factors = numbers.map(primeFactorization);
 
     let value: number;
     let steps: string[];
 
     if (activeTab === 'nod') {
-      value = calculateNOD(n1, n2);
-      steps = generateNODSteps(n1, n2, factors1, factors2, value);
+      value = calculateNOD(...numbers); // v2.0.0: 2..3 аргумента
+      steps = generateSteps(numbers, factors, value, 'nod');
     } else {
-      value = calculateNOK(n1, n2);
-      steps = generateNOKSteps(n1, n2, factors1, factors2, value);
+      value = calculateNOK(...numbers); // v2.0.0: 2..3 аргумента
+      steps = generateSteps(numbers, factors, value, 'nok');
     }
 
-    setResult({ value, factors1, factors2, steps });
+    setResult({ value, factors, steps });
 
     // Add to history
     const newHistoryItem: CalculationHistory = {
       id: Date.now(),
       type: activeTab,
-      numbers: [n1, n2],
+      numbers,
       result: value,
     };
     setHistory(prev => [newHistoryItem, ...prev].slice(0, 5));
   };
 
-  const generateNODSteps = (n1: number, n2: number, f1: number[], f2: number[], res: number): string[] => {
-    const steps = [];
-    steps.push(`${n1} = ${formatFactorization(f1)}`);
-    steps.push(`${n2} = ${formatFactorization(f2)}`);
+  /**
+   * v2.0.0: универсальная генерация пошагового решения для 2..3 чисел.
+   * mode 'nod' — общие множители (минимум количеств),
+   * mode 'nok' — все уникальные множители (максимум количеств).
+   */
+  const generateSteps = (
+    numbers: number[],
+    factors: number[][],
+    res: number,
+    mode: 'nod' | 'nok'
+  ): string[] => {
+    const steps: string[] = [];
 
-    const counts1: Record<number, number> = {};
-    const counts2: Record<number, number> = {};
-    f1.forEach(f => counts1[f] = (counts1[f] || 0) + 1);
-    f2.forEach(f => counts2[f] = (counts2[f] || 0) + 1);
+    // Шаг 1..k: разложение каждого числа
+    numbers.forEach((n, idx) => {
+      steps.push(`${n} = ${formatFactorization(factors[idx])}`);
+    });
 
-    const commonFactors: string[] = [];
-    const allPrimes = new Set([...Object.keys(counts1), ...Object.keys(counts2)].map(Number));
+    // Карты "множитель -> количество" по каждому числу
+    const maps = factors.map(fs => {
+      const c: Record<number, number> = {};
+      fs.forEach(f => c[f] = (c[f] || 0) + 1);
+      return c;
+    });
+
+    // Объединяем карты: min для НОД, max для НОК
+    const allPrimes = Array.from(new Set(maps.flatMap(m => Object.keys(m).map(Number))))
+      .sort((a, b) => a - b);
+
+    const pickedFactors: string[] = [];
     allPrimes.forEach(prime => {
-      if (counts1[prime] && counts2[prime]) {
-        const minCount = Math.min(counts1[prime], counts2[prime]);
-        // commonFactors.push(minCount === 1 ? `${prime}` : `${prime}^${minCount}`);
-        // Вместо степени создаем строку из повторяющихся множителей
-        const repeatedPrime = Array(minCount).fill(prime).join(' × ');
-        commonFactors.push(repeatedPrime);
+      const presentInAll = maps.every(m => prime in m);
+      if (mode === 'nod') {
+        if (!presentInAll) return; // общий делитель требует присутствия во всех числах
+        const cnt = Math.min(...maps.map(m => m[prime]));
+        pickedFactors.push(Array(cnt).fill(prime).join(' × '));
+      } else {
+        const cnt = Math.max(...maps.map(m => m[prime] || 0));
+        if (cnt > 0) pickedFactors.push(Array(cnt).fill(prime).join(' × '));
       }
     });
 
-    steps.push(`Общие множители: ${commonFactors.join(' × ')}`);
-    steps.push(`НОД(${n1}, ${n2}) = ${commonFactors.join(' × ')} = ${res}`);
-    return steps;
-  };
+    const label = mode === 'nod' ? 'НОД' : 'НОК';
+    const title = mode === 'nod' ? 'Общие множители' : 'Все уникальные множители';
+    const joined = pickedFactors.length > 0 ? pickedFactors.join(' × ') : '1';
 
-  const generateNOKSteps = (n1: number, n2: number, f1: number[], f2: number[], res: number): string[] => {
-    const steps = [];
-    steps.push(`${n1} = ${formatFactorization(f1)}`);
-    steps.push(`${n2} = ${formatFactorization(f2)}`);
-
-    const counts1: Record<number, number> = {};
-    const counts2: Record<number, number> = {};
-    f1.forEach(f => counts1[f] = (counts1[f] || 0) + 1);
-    f2.forEach(f => counts2[f] = (counts2[f] || 0) + 1);
-
-    const allFactors: string[] = [];
-    const allPrimes = new Set([...Object.keys(counts1), ...Object.keys(counts2)].map(Number));
-    //   allFactors.push(maxCount === 1 ? `${prime}` : `${prime}^${maxCount}`);
-    // });
-    allPrimes.forEach(prime => {
-      const maxCount = Math.max(counts1[prime] || 0, counts2[prime] || 0);
-      if (maxCount > 0) {
-        // Создаем массив длиной maxCount, заполняем его значением prime 
-        // и объединяем в строку через '×'
-        const repeatedPrime = Array(maxCount).fill(prime).join(' × ');
-        allFactors.push(repeatedPrime);
-      }
-    });
-
-    steps.push(`Все уникальные множители: ${allFactors.join(' × ')}`);
-    steps.push(`НОК(${n1}, ${n2}) = ${allFactors.join(' × ')} = ${res}`);
+    steps.push(`${title}: ${joined}`);
+    // Если множитель один (или результат = 1), не дублируем разложение
+    if (pickedFactors.length <= 1) {
+      steps.push(`${label}(${numbers.join(', ')}) = ${res}`);
+    } else {
+      steps.push(`${label}(${numbers.join(', ')}) = ${joined} = ${res}`);
+    }
     return steps;
   };
 
   const handleReset = () => {
     setNum1('');
     setNum2('');
+    setNum3(''); // v2.0.0
     setResult(null);
     setError('');
   };
 
   const fillFromHistory = (item: CalculationHistory) => {
     setActiveTab(item.type);
-    setNum1(item.numbers[0].toString());
-    setNum2(item.numbers[1].toString());
+    setNum1(item.numbers[0]?.toString() ?? '');
+    setNum2(item.numbers[1]?.toString() ?? '');
+    setNum3(item.numbers[2]?.toString() ?? ''); // v2.0.0
     setResult(null);
   };
 
@@ -158,8 +189,9 @@ export default function Calculator() {
             <h2 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-text-primary mb-3 sm:mb-4">
               Вычисли <span className="text-gradient-nod">НОД</span> и <span className="text-gradient-nok">НОК</span>
             </h2>
+            {/* v2.0.0: текст обновлён — теперь можно ввести три числа */}
             <p className="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto px-4">
-              Введи два числа и получи пошаговое решение
+              Введи два или три числа и получи пошаговое решение
             </p>
           </motion.div>
 
@@ -194,8 +226,10 @@ export default function Calculator() {
                     type="nod"
                     num1={num1}
                     num2={num2}
+                    num3={num3}
                     setNum1={setNum1}
                     setNum2={setNum2}
+                    setNum3={setNum3}
                     result={result}
                     error={error}
                     onCalculate={handleCalculate}
@@ -208,8 +242,10 @@ export default function Calculator() {
                     type="nok"
                     num1={num1}
                     num2={num2}
+                    num3={num3}
                     setNum1={setNum1}
                     setNum2={setNum2}
+                    setNum3={setNum3}
                     result={result}
                     error={error}
                     onCalculate={handleCalculate}
@@ -275,27 +311,24 @@ interface CalculatorContentProps {
   type: 'nod' | 'nok';
   num1: string;
   num2: string;
+  num3: string; // v2.0.0: третье число (опционально)
   setNum1: (v: string) => void;
   setNum2: (v: string) => void;
-  result: {
-    value: number;
-    factors1: number[];
-    factors2: number[];
-    steps: string[];
-  } | null;
+  setNum3: (v: string) => void; // v2.0.0
+  result: CalculationResult | null;
   error: string;
   onCalculate: () => void;
   onReset: () => void;
 }
 
-function CalculatorContent({ type, num1, num2, setNum1, setNum2, result, error, onCalculate, onReset }: CalculatorContentProps) {
+function CalculatorContent({ type, num1, num2, num3, setNum1, setNum2, setNum3, result, error, onCalculate, onReset }: CalculatorContentProps) {
   const isNOD = type === 'nod';
   const accentClass = isNOD ? 'text-nod-dark border-nod focus:border-nod focus:ring-nod/20' : 'text-nok-dark border-nok focus:border-nok focus:ring-nok/20';
 
   return (
     <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-card border border-border">
-      {/* Input Fields */}
-      <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+      {/* Input Fields — v2.0.0: добавлено третье поле */}
+      <div className="grid sm:grid-cols-3 gap-3 sm:gap-4 mb-1.5 sm:mb-2">
         <div>
           <label className="block font-heading font-semibold text-text-primary mb-1.5 sm:mb-2 text-sm sm:text-base">Первое число</label>
           <Input
@@ -320,6 +353,21 @@ function CalculatorContent({ type, num1, num2, setNum1, setNum2, result, error, 
             max="10000"
           />
         </div>
+        {/* v2.0.0: третье число — необязательное */}
+        <div>
+          <label className="block font-heading font-semibold text-text-primary mb-1.5 sm:mb-2 text-sm sm:text-base">
+            Третье число <span className="text-text-secondary font-normal text-xs">(необязательно)</span>
+          </label>
+          <Input
+            type="number"
+            value={num3}
+            onChange={(e) => setNum3(e.target.value)}
+            placeholder="Например: 60"
+            className={`input-field ${accentClass}`}
+            min="1"
+            max="10000"
+          />
+        </div>
       </div>
 
       {/* Error */}
@@ -337,7 +385,7 @@ function CalculatorContent({ type, num1, num2, setNum1, setNum2, result, error, 
       </AnimatePresence>
 
       {/* Buttons */}
-      <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8">
+      <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8 mt-4">
         <motion.button
           onClick={onCalculate}
           className={`flex-1 ${isNOD ? 'btn-primary' : 'btn-secondary'} py-3.5 sm:py-4 text-sm sm:text-base touch-manipulation`}
@@ -367,13 +415,13 @@ function CalculatorContent({ type, num1, num2, setNum1, setNum2, result, error, 
             exit={{ opacity: 0, height: 0 }}
             className="border-t border-border pt-4 sm:pt-6"
           >
-            {/* Final Result */}
+            {/* Final Result — v2.0.0: список чисел формируется из результата */}
             <div className={`text-center p-4 sm:p-6 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 ${isNOD ? 'bg-nod/10' : 'bg-nok/10'}`}>
               <p className="text-text-secondary mb-1 sm:mb-2 text-sm sm:text-base">
                 {isNOD ? 'Наибольший общий делитель' : 'Наименьшее общее кратное'}
               </p>
               <p className="font-mono text-2xl sm:text-4xl font-bold" style={{ color: isNOD ? '#3BA99F' : '#E85555' }}>
-                {isNOD ? 'НОД' : 'НОК'}({num1}, {num2}) = {result.value}
+                {isNOD ? 'НОД' : 'НОК'}({resultNumbers(num1, num2, num3).join(', ')}) = {result.value}
               </p>
             </div>
 
@@ -400,4 +448,12 @@ function CalculatorContent({ type, num1, num2, setNum1, setNum2, result, error, 
       </AnimatePresence>
     </div>
   );
+}
+
+// v2.0.0: вспомогательная функция — список чисел для заголовка результата
+// (третье число включается, только если заполнено)
+function resultNumbers(num1: string, num2: string, num3: string): string[] {
+  const list = [num1, num2];
+  if (num3.trim() !== '') list.push(num3);
+  return list;
 }

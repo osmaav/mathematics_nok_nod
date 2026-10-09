@@ -1,4 +1,11 @@
 <!doctype html>
+<!--
+  index.html — входная страница web-app
+  Версия файла: 1.1.0 (релиз приложения v2.1.0)
+  Изменения v1.1.0: добавлены favicon, apple-touch-icon, набор иконок для
+  iPhone 7...iPhone 16 / iPad 6...iPad 10 (screen-width media queries)
+  и ссылка на манифест PWA. Иконки генерируются scripts/generate-icons.py
+-->
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +14,32 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="theme-color" content="#FFFFFF" />
     <meta name="format-detection" content="telephone=no" />
+    <!-- === Иконки web-app (v2.1.0) === -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="./icons/favicon-48.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <!-- Apple Touch Icon (по умолчанию) -->
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <!-- iPhone 7/8/SE (@2x, логическая ширина 375pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 375px) and (-webkit-device-pixel-ratio: 2)" href="./icons/iphone-750x1334.png" />
+    <!-- iPhone X/XS/11 Pro/12 mini/13 mini (@3x, 375pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 375px) and (-webkit-device-pixel-ratio: 3)" href="./icons/iphone-1125x2436.png" />
+    <!-- iPhone XR/11 (@2x, 414pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 414px) and (-webkit-device-pixel-ratio: 2)" href="./icons/iphone-828x1792.png" />
+    <!-- iPhone XS Max/11 Pro Max (@3x, 414pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 414px) and (-webkit-device-pixel-ratio: 3)" href="./icons/iphone-1242x2688.png" />
+    <!-- iPhone 12/13/14/15/16 (@2x, 390pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 390px) and (-webkit-device-pixel-ratio: 2)" href="./icons/iphone-780x1688.png" />
+    <!-- iPhone 12 Pro/13 Pro/14/15/16 Pro (@3x, 390pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 390px) and (-webkit-device-pixel-ratio: 3)" href="./icons/iphone-1170x2532.png" />
+    <!-- iPhone 14 Plus/16 Plus/16 Pro Max (@3x, 430pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 430px) and (-webkit-device-pixel-ratio: 3)" href="./icons/iphone-1290x2796.png" />
+    <!-- iPad 6/7 (10.2", @2x, 768pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 768px)" href="./icons/ipad-1536x2048.png" />
+    <!-- iPad 8/9 (10.2", @2x, 810pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 810px)" href="./icons/ipad-1620x2160.png" />
+    <!-- iPad 10 (10.9", @2x, 820pt) -->
+    <link rel="apple-touch-icon" media="(device-width: 820px)" href="./icons/ipad-1640x2360.png" />
     <title>НОД и НОК - Математика 5 класс</title>
   </head>
   <body>

@@ -1,0 +1,8 @@
+.DS_Store
+# Dependencies
+node_modules/
+
+# Build artifacts and logs (common for Vite/Tailwind projects)
+dist/
+build/
+*.log

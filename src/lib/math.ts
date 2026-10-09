@@ -1,3 +1,17 @@
+// ========================================================================
+// src/lib/math.ts
+// Версия модуля: 2.0.0 (релиз приложения v2.1.0)
+// Изменения v2.0.0:
+//   * calculateNOD / calculateNOK переведены на вариадический сигнатур
+//     (...numbers: number[]) — поддержка двух ИЛИ трёх чисел;
+//   * добавлены вспомогательные функции factorizationsCounts / mergeCounts
+//     для объединения разложений произвольного количества чисел;
+//   * generateNODSolution / generateNOKSolution переписаны для работы
+//     с массивом из любого числа (2..3) входных значений.
+// Обратная совместимость: вызовы calculateNOD(a, b) и calculateNOK(a, b)
+// продолжают работать без изменений.
+// ========================================================================
+
 // Prime factorization of a number
 export function primeFactorization(n: number): number[] {
   const factors: number[] = [];
@@ -36,50 +50,63 @@ export function formatFactorization(factors: number[]): string {
     .join(' × '); // Используем '×' как общий разделитель
 }
 
-// Calculate GCD (НОД) using prime factorization
-export function calculateNOD(a: number, b: number): number {
-  const factorsA = primeFactorization(a);
-  const factorsB = primeFactorization(b);
-
-  const countsA: Record<number, number> = {};
-  const countsB: Record<number, number> = {};
-
-  factorsA.forEach(f => countsA[f] = (countsA[f] || 0) + 1);
-  factorsB.forEach(f => countsB[f] = (countsB[f] || 0) + 1);
-
-  let nod = 1;
-  const commonPrimes = new Set([...Object.keys(countsA), ...Object.keys(countsB)].map(Number));
-
-  commonPrimes.forEach(prime => {
-    if (countsA[prime] && countsB[prime]) {
-      const minCount = Math.min(countsA[prime], countsB[prime]);
-      nod *= Math.pow(prime, minCount);
-    }
-  });
-
-  return nod;
+// v2.0.0: возвращает карту "простой множитель -> количество" для числа
+function factorCounts(n: number): Record<number, number> {
+  const counts: Record<number, number> = {};
+  primeFactorization(n).forEach(f => counts[f] = (counts[f] || 0) + 1);
+  return counts;
 }
 
-// Calculate LCM (НОК) using prime factorization
-export function calculateNOK(a: number, b: number): number {
-  const factorsA = primeFactorization(a);
-  const factorsB = primeFactorization(b);
-
-  const countsA: Record<number, number> = {};
-  const countsB: Record<number, number> = {};
-
-  factorsA.forEach(f => countsA[f] = (countsA[f] || 0) + 1);
-  factorsB.forEach(f => countsB[f] = (countsB[f] || 0) + 1);
-
-  let nok = 1;
-  const allPrimes = new Set([...Object.keys(countsA), ...Object.keys(countsB)].map(Number));
-
-  allPrimes.forEach(prime => {
-    const maxCount = Math.max(countsA[prime] || 0, countsB[prime] || 0);
-    nok *= Math.pow(prime, maxCount);
+// v2.0.0: объединяет карты множителей: mode 'min' — для НОД, 'max' — для НОК
+function mergeCounts(maps: Record<number, number>[], mode: 'min' | 'max'): Record<number, number> {
+  const merged: Record<number, number> = {};
+  maps.forEach(map => {
+    Object.keys(map).map(Number).forEach(prime => {
+      if (!(prime in merged)) {
+        // при 'min' отсутствующий множитель у другого числа означает 0
+        merged[prime] = mode === 'min' ? map[prime] : map[prime];
+      } else {
+        merged[prime] = mode === 'min'
+          ? Math.min(merged[prime], map[prime])
+          : Math.max(merged[prime], map[prime]);
+      }
+    });
   });
+  // Для НОД оставляем только множители, присутствующие во ВСЕХ числах
+  if (mode === 'min') {
+    Object.keys(merged).forEach(k => {
+      const presentInAll = maps.every(m => Number(k) in m);
+      if (!presentInAll) delete merged[Number(k)];
+    });
+  }
+  return merged;
+}
 
-  return nok;
+// Result of a merged factor-count map as a number
+function countsToValue(counts: Record<number, number>): number {
+  let value = 1;
+  Object.entries(counts).forEach(([prime, count]) => {
+    value *= Math.pow(Number(prime), count);
+  });
+  return value;
+}
+
+// Calculate GCD (НОД) for two OR three (or more) numbers — v2.0.0
+// Обратная совместимость: calculateNOD(a, b) работает как раньше.
+export function calculateNOD(...numbers: number[]): number {
+  if (numbers.length === 0) return 0;
+  if (numbers.length === 1) return Math.abs(numbers[0]);
+  const maps = numbers.map(factorCounts);
+  return countsToValue(mergeCounts(maps, 'min'));
+}
+
+// Calculate LCM (НОК) for two OR three (or more) numbers — v2.0.0
+// Обратная совместимость: calculateNOK(a, b) работает как раньше.
+export function calculateNOK(...numbers: number[]): number {
+  if (numbers.length === 0) return 0;
+  if (numbers.length === 1) return Math.abs(numbers[0]);
+  const maps = numbers.map(factorCounts);
+  return countsToValue(mergeCounts(maps, 'max'));
 }
 
 // Calculate GCD for multiple numbers
@@ -182,77 +209,58 @@ function generateNOKHint(numbers: number[]): string {
   }
 }
 
-// Helper function to generate solution string for NOD
+// Helper function to generate solution string for NOD — v2.0.0 (2..3 числа)
 function generateNODSolution(numbers: number[]): string {
   const nod = calculateNODMultiple(numbers);
-  const factorsA = primeFactorization(numbers[0]);
-  const factorsB = primeFactorization(numbers[1]);
-  
-  // Find common factors
-  const countsA: Record<number, number> = {};
-  const countsB: Record<number, number> = {};
-  
-  factorsA.forEach(f => countsA[f] = (countsA[f] || 0) + 1);
-  factorsB.forEach(f => countsB[f] = (countsB[f] || 0) + 1);
-  
-  const commonFactors: number[] = [];
-  const allPrimes = new Set([...Object.keys(countsA), ...Object.keys(countsB)].map(Number));
-  
-  allPrimes.forEach(prime => {
-    if (countsA[prime] && countsB[prime]) {
-      const minCount = Math.min(countsA[prime], countsB[prime]);
-      for (let i = 0; i < minCount; i++) {
-        commonFactors.push(prime);
-      }
-    }
+
+  // Общие множители присутствуют во всех числах -> берём минимум количеств
+  const maps = numbers.map(n => {
+    const c: Record<number, number> = {};
+    primeFactorization(n).forEach(f => c[f] = (c[f] || 0) + 1);
+    return c;
   });
-  
+  const commonPrimes = Object.keys(maps[0]).map(Number)
+    .filter(p => maps.every(m => p in m));
+  const commonFactors: number[] = [];
+  commonPrimes.forEach(prime => {
+    const minCount = Math.min(...maps.map(m => m[prime]));
+    for (let i = 0; i < minCount; i++) commonFactors.push(prime);
+  });
+  commonFactors.sort((a, b) => a - b);
+
   const commonFactorsStr = commonFactors.length > 0 ? commonFactors.join(' × ') : '1';
-  
-  if (numbers.length === 2) {
-    // Если общий множитель один или НОД = 1, не дублируем его
-    if (commonFactors.length <= 1) {
-      return `НОД(${numbers.join(', ')}) = ${nod}`;
-    }
-    return `НОД(${numbers.join(', ')}) = ${commonFactorsStr} = ${nod}`;
-  } else {
+
+  // Если общий множитель один или НОД = 1, не дублируем его
+  if (commonFactors.length <= 1) {
     return `НОД(${numbers.join(', ')}) = ${nod}`;
   }
+  return `НОД(${numbers.join(', ')}) = ${commonFactorsStr} = ${nod}`;
 }
 
-// Helper function to generate solution string for NOK
+// Helper function to generate solution string for NOK — v2.0.0 (2..3 числа)
 function generateNOKSolution(numbers: number[]): string {
   const nok = calculateNOKMultiple(numbers);
-  
-  if (numbers.length === 2) {
-    const factorsA = primeFactorization(numbers[0]);
-    const factorsB = primeFactorization(numbers[1]);
-    
-    const countsA: Record<number, number> = {};
-    const countsB: Record<number, number> = {};
-    
-    factorsA.forEach(f => countsA[f] = (countsA[f] || 0) + 1);
-    factorsB.forEach(f => countsB[f] = (countsB[f] || 0) + 1);
-    
-    const maxFactors: number[] = [];
-    const allPrimes = new Set([...Object.keys(countsA), ...Object.keys(countsB)].map(Number));
-    
-    allPrimes.forEach(prime => {
-      const maxCount = Math.max(countsA[prime] || 0, countsB[prime] || 0);
-      for (let i = 0; i < maxCount; i++) {
-        maxFactors.push(prime);
-      }
-    });
-    
-    const maxFactorsStr = maxFactors.join(' × ');
-    // Если множитель один, не дублируем его
-    if (maxFactors.length <= 1) {
-      return `НОК(${numbers.join(', ')}) = ${nok}`;
-    }
-    return `НОК(${numbers.join(', ')}) = ${maxFactorsStr} = ${nok}`;
-  } else {
+
+  // Для НОК берём максимум количеств каждого простого множителя по всем числам
+  const maps = numbers.map(n => {
+    const c: Record<number, number> = {};
+    primeFactorization(n).forEach(f => c[f] = (c[f] || 0) + 1);
+    return c;
+  });
+  const allPrimes = Array.from(new Set(maps.flatMap(m => Object.keys(m).map(Number))));
+  const maxFactors: number[] = [];
+  allPrimes.forEach(prime => {
+    const maxCount = Math.max(...maps.map(m => m[prime] || 0));
+    for (let i = 0; i < maxCount; i++) maxFactors.push(prime);
+  });
+  maxFactors.sort((a, b) => a - b);
+
+  const maxFactorsStr = maxFactors.join(' × ');
+  // Если множитель один, не дублируем его
+  if (maxFactors.length <= 1) {
     return `НОК(${numbers.join(', ')}) = ${nok}`;
   }
+  return `НОК(${numbers.join(', ')}) = ${maxFactorsStr} = ${nok}`;
 }
 
 // Generate random numbers for practice tasks
