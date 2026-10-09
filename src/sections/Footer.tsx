@@ -1,6 +1,3 @@
-import { motion } from 'framer-motion';
-import { Calculator, BookOpen, GraduationCap, ExternalLink } from 'lucide-react';
-
 export default function Footer() {
   return (
     <footer
