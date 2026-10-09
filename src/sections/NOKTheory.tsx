@@ -1,9 +1,17 @@
 // ========================================================================
 // src/sections/NOKTheory.tsx
-// Версия секции: 2.4.0 (релиз приложения v2.4.0)
+// Версия секции: 2.5.0 (релиз приложения v2.5.0)
+// Изменения v2.5.0:
+//   * заголовок алгоритма приведён к виду «Пошаговый алгоритм нахождения НОК
+//     (исправленный)» — в паре с таким же заголовком в секции НОД;
+//   * добавлен блок «Связь двух алгоритмов (методический совет)»:
+//     сравнительная таблица НОК/НОД (что ищем, какие основания, какую
+//     степень) и мнемоническое правило «сборная солянка / общий
+//     знаменатель». Полный текст — в секции НОД (NODTheory.tsx).
 // Изменения v2.4.0:
 //   * интерактивный пример НОК(4, 6) переведён на запись со степенями:
-//     "4 = 2²", "6 = 2¹ · 3¹", выбор — "2² · 3¹", результат — "2² · 3¹ = 12";
+//     "4 = 2²", "6 = 2¹ · 3¹", выбор — "2² · 3¹", результат — "2² · 3¹ = 12"
+//     (умножение степеней записано свёрнуто, без промежуточных 4 × 3);
 //   * разложения в алгоритме дополнены явными нулевыми степенями
 //     (72 = 2³ · 3² · 5⁰), чтобы все три строки имели одинаковый набор
 //     оснований — как в таблице-шпаргалке.
@@ -75,7 +83,8 @@ export default function NOKTheory() {
       title: 'Перемножим выбранные степени',
       content: (
         <div className="space-y-2 sm:space-y-3">
-          <p className="font-mono text-base sm:text-lg">2² · 3¹ = 4 × 3 = <span className="text-nok-dark font-bold text-xl sm:text-2xl">12</span></p>
+          {/* v2.5.0: итог записан свёрнуто степенями (без промежуточного умножения 4 × 3) */}
+          <p className="font-mono text-base sm:text-lg">2² · 3¹ = <span className="text-nok-dark font-bold text-xl sm:text-2xl">12</span></p>
           <p className="text-text-secondary text-sm sm:text-base">Значит, НОК({exampleNumbers.a}, {exampleNumbers.b}) = 12</p>
         </div>
       )
@@ -223,7 +232,7 @@ export default function NOKTheory() {
             className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-card border border-border"
           >
             <h3 className="font-heading font-bold text-xl sm:text-2xl text-text-primary mb-2 sm:mb-3">
-              Пошаговый алгоритм нахождения НОК
+              Пошаговый алгоритм нахождения НОК (исправленный)
             </h3>
             <p className="text-text-secondary text-sm sm:text-base mb-5 sm:mb-6">
               Пример: найдём <span className="font-mono font-semibold text-nok-dark">НОК(72, 90, 150)</span>
@@ -359,6 +368,24 @@ export default function NOKTheory() {
                 </table>
               </div>
             </div>
+          </motion.div>
+
+          {/* Связь двух алгоритмов — v2.5.0: методический совет (краткая сводка, полный текст — в секции НОД) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.45 }}
+            className="mt-6 sm:mt-8 flex items-start gap-2 sm:gap-3 bg-purple-50 border-2 border-purple-200 rounded-xl p-3 sm:p-4"
+          >
+            <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+            <p className="text-xs sm:text-sm text-text-primary">
+              <strong>Связь двух алгоритмов:</strong> НОК берёт все уникальные основания в{' '}
+              <span className="font-mono font-bold text-nok-dark">максимальной</span> степени («сборная солянка»),
+              НОД — только общие основания в <span className="font-mono font-bold text-nod-dark">минимальной</span>{' '}
+              степени («общий знаменатель»). Сравнительная таблица и мнемоническое правило — в разделе{' '}
+              <a href="#nod" className="underline font-semibold text-nod-dark hover:text-nod">«Что такое НОД?»</a>.
+            </p>
           </motion.div>
 
           {/* Interactive Example */}
