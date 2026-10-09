@@ -92,8 +92,19 @@ export default function Header() {
               })}
             </nav>
 
-            {/* CTA Button */}
-            <div className="hidden lg:block">
+            {/* v2.2.0: ссылка на связанный проект «Правила делимости» + CTA Button */}
+            <div className="hidden lg:flex items-center gap-3">
+              {/* Перекрёстная ссылка на сайт mathematics-divisibility */}
+              <a
+                href="https://osmaav.github.io/mathematics-divisibility/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm font-heading font-semibold text-violet-600 hover:text-violet-700 transition-colors"
+                title="Математика 5 класс — Правила делимости"
+              >
+                <BookOpen className="w-4 h-4" />
+                Правила делимости
+              </a>
               <motion.button
                 onClick={() => scrollToSection('#quiz')}
                 className="btn-secondary text-sm py-2.5 px-5"
@@ -163,6 +174,16 @@ export default function Header() {
                 >
                   Проверь себя
                 </motion.button>
+                {/* v2.2.0: перекрёстная ссылка на сайт mathematics-divisibility (мобильное меню) */}
+                <a
+                  href="https://osmaav.github.io/mathematics-divisibility/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-heading font-semibold text-violet-600 bg-violet-50 hover:bg-violet-100 transition-colors"
+                >
+                  <BookOpen className="w-5 h-5" />
+                  Правила делимости
+                </a>
               </div>
             </div>
           </motion.div>
